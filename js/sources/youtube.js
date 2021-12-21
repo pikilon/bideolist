@@ -1,3 +1,5 @@
+//https://developers.google.com/youtube/v3/getting-started?hl=es#Sample_Partial_Requests
+
 import { YOUTUBE_API_KEY } from "/config.js"
 
 const wrapUrlWithApiKey = (url) => `${url}&key=${YOUTUBE_API_KEY}`
@@ -8,7 +10,7 @@ export const youtubeFetchVideos = async (id) => {
   const url = [
     "https://www.googleapis.com/youtube/v3/videos" +
       "?part=snippet,contentDetails",
-    "fields=items(id,snippet(title,channelTitle,thumbnails),contentDetails(duration,projection))",
+    "fields=items(id,snippet(title,description,thumbnails),contentDetails(duration,projection))",
     `id=${idString}`,
   ].join("&")
   const response = await fetch(wrapUrlWithApiKey(url))
@@ -17,6 +19,8 @@ export const youtubeFetchVideos = async (id) => {
   return formmatedVideos
 }
 
+// "PT15M51S"
+// "PT1H16M39S"
 const getYoutubeVideoDurationSeconds = (duration) => {
   const [hours, minutes, seconds] = duration
     .match(/PT(\d+H)?(\d+M)?(\d+S)?/)
@@ -24,19 +28,17 @@ const getYoutubeVideoDurationSeconds = (duration) => {
     .map((v) => (v ? parseInt(v.replace(/\D/g, "")) : 0))
   return hours * 3600 + minutes * 60 + seconds
 }
-// "PT15M51S"
-// "PT1H16M39S"
 const formatYoutubeVideo = (video) => {
   const {
     id,
-    snippet: { title, channelTitle, thumbnails },
+    snippet: { title, description, thumbnails },
     contentDetails: { duration, projection },
   } = video
   const durationSeconds = getYoutubeVideoDurationSeconds(duration)
   return {
     id,
     title,
-    channelTitle,
+    description,
     thumbUrl: thumbnails.default.url,
     durationSeconds,
     projection,
