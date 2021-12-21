@@ -1,5 +1,5 @@
 import { html, css, LitElement } from "https://unpkg.com/lit?module"
-import { youtubeFetchVideos } from "./youtube/fetchVideos.js"
+import { youtubeFetchVideos } from "./sources/youtube.js"
 import { YOUTUBE_API_KEY } from "/config.js"
 
 export class SimpleGreeting extends LitElement {
