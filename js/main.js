@@ -1,7 +1,6 @@
 import { html, css, LitElement } from "https://unpkg.com/lit?module"
-import { youtubeFetchVideos } from "./sources/youtube.js"
-import { dailymotionFetchVideos } from "./sources/dailymotion.js"
-import { fetchVimeoVideos } from "./sources/vimeo.js"
+import { fetchAllVideos } from "./api/fetchAllVideos.js"
+import { SOURCES } from "./constants.js"
 
 export class SimpleGreeting extends LitElement {
   static styles = css`
@@ -17,12 +16,17 @@ export class SimpleGreeting extends LitElement {
   constructor() {
     super()
     this.name = "Somebody"
-    const sampleYT = ["7lCDEYXw3mM", "RUyTN9hajHY", "YEW_UFm4Xe4"]
-    const sampleDM = ["x86h9zq", "x14lnch"]
-    const sampleVI = ["253497000", "81329596"]
-    youtubeFetchVideos(sampleYT).then(console.log)
-    dailymotionFetchVideos(sampleDM).then(console.log)
-    fetchVimeoVideos(sampleVI).then(console.log)
+    const sampleList = [
+      { source: SOURCES.YOUTUBE.ID, id: "7lCDEYXw3mM" },
+      { source: SOURCES.YOUTUBE.ID, id: "RUyTN9hajHY" },
+      { source: SOURCES.YOUTUBE.ID, id: "YEW_UFm4Xe4" },
+      { source: SOURCES.DAILYMOTION.ID, id: "x86h9zq" },
+      { source: SOURCES.DAILYMOTION.ID, id: "x14lnch" },
+      { source: SOURCES.VIMEO.ID, id: "253497000" },
+      { source: SOURCES.VIMEO.ID, id: "81329596" },
+    ]
+    fetchAllVideos(sampleList).then(console.log)
+
   }
 
   render() {
