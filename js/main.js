@@ -1,6 +1,7 @@
 import { html, css, LitElement } from "https://unpkg.com/lit?module"
 import { youtubeFetchVideos } from "./sources/youtube.js"
 import { dailymotionFetchVideos } from "./sources/dailymotion.js"
+import { fetchVimeoVideos } from "./sources/vimeo.js"
 
 export class SimpleGreeting extends LitElement {
   static styles = css`
@@ -18,10 +19,10 @@ export class SimpleGreeting extends LitElement {
     this.name = "Somebody"
     const sampleYT = ["7lCDEYXw3mM", "RUyTN9hajHY", "YEW_UFm4Xe4"]
     const sampleDM = ["x86h9zq", "x14lnch"]
+    const sampleVI = ["253497000", "81329596"]
     youtubeFetchVideos(sampleYT).then(console.log)
     dailymotionFetchVideos(sampleDM).then(console.log)
-    // vimeo with URIs https://developer.vimeo.com/api/reference/videos?version=3.4#search_videos
-    // uris /videos/253497000,/videos/81329596
+    fetchVimeoVideos(sampleVI).then(console.log)
   }
 
   render() {
