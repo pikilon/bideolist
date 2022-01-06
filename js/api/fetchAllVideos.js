@@ -9,6 +9,16 @@ const sourcesArray = [
   { id: SOURCES.VIMEO.ID, fetch: fetchVimeoVideos },
 ]
 
+export const generateVideosString = (sourceIdArray) =>
+  sourceIdArray.map(({ source, id }) => `${source}:${id}`).join(",")
+const getVideosFromString = (videosString) =>
+  videosString.split(",").map((videoParam) => {
+    const [source, id] = videoParam.split(":")
+    return { source, id }
+  })
+export const fetchAllVideosFromString = (videosString) =>
+  fetchAllVideos(getVideosFromString(videosString))
+
 export const fetchAllVideos = async (sourceIdArray) => {
   const videosBySource = sourceIdArray.reduce(
     (acc, { source, id }) => {

@@ -1,6 +1,5 @@
 import { html, css, LitElement } from "https://unpkg.com/lit?module"
-import { fetchAllVideos } from "./api/fetchAllVideos.js"
-import { SOURCES } from "./constants.js"
+import { fetchAllVideosFromString } from "./api/fetchAllVideos.js"
 
 export class SimpleGreeting extends LitElement {
   static styles = css`
@@ -16,17 +15,9 @@ export class SimpleGreeting extends LitElement {
   constructor() {
     super()
     this.name = "Somebody"
-    const sampleList = [
-      { source: SOURCES.YOUTUBE.ID, id: "7lCDEYXw3mM" },
-      { source: SOURCES.YOUTUBE.ID, id: "RUyTN9hajHY" },
-      { source: SOURCES.YOUTUBE.ID, id: "YEW_UFm4Xe4" },
-      { source: SOURCES.DAILYMOTION.ID, id: "x86h9zq" },
-      { source: SOURCES.DAILYMOTION.ID, id: "x14lnch" },
-      { source: SOURCES.VIMEO.ID, id: "253497000" },
-      { source: SOURCES.VIMEO.ID, id: "81329596" },
-    ]
-    fetchAllVideos(sampleList).then(console.log)
-
+    const videosString =
+      "yt:7lCDEYXw3mM,yt:RUyTN9hajHY,yt:YEW_UFm4Xe4,dm:x86h9zq,dm:x14lnch,vi:253497000,vi:81329596"
+    fetchAllVideosFromString(videosString).then(console.log)
   }
 
   render() {
