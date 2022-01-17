@@ -12,23 +12,25 @@ const sourcesArray = [
 export const generateVideosString = (sourceIdArray) =>
   sourceIdArray.map(({ source, id }) => `${source}:${id}`).join(",")
 const getVideosFromString = (videosString) =>
-  videosString.split(",").map((videoParam) => {
+  videosString.split(",").map((videoParam, order) => {
     const [source, id] = videoParam.split(":")
-    return { source, id }
+    return { source, id, order }
   })
 export const fetchAllVideosFromString = (videosString) =>
   fetchAllVideos(getVideosFromString(videosString))
 
 export const fetchAllVideos = async (sourceIdArray) => {
-  const videosBySource = sourceIdArray.reduce(
-    (acc, { source, id }) => {
+  const { orderMap, ...videosBySource } = sourceIdArray.reduce(
+    (acc, { source, id, order }) => {
       if (acc[source]) acc[source].push(id)
+      acc.orderMap[`${source}:${id}`] = order
       return acc
     },
     {
       [SOURCES.YOUTUBE.ID]: [],
       [SOURCES.DAILYMOTION.ID]: [],
       [SOURCES.VIMEO.ID]: [],
+      orderMap: {},
     }
   )
   const allVideosPromises = sourcesArray.map(({ id, fetch }) => {
@@ -36,12 +38,16 @@ export const fetchAllVideos = async (sourceIdArray) => {
     return fetch(ids)
   })
   const allVideos = await Promise.all(allVideosPromises)
-  const videosMap = allVideos.reduce((acc, videos) => {
-    videos.forEach((video) => {
-      acc[video.id] = video
-    })
-    return acc
-  }, {})
-  const videosOrdered = sourceIdArray.map(({ id }) => videosMap[id])
-  return { videosOrdered, videosMap }
+  const result = allVideos.reduce(
+    (acc, videos) => {
+      videos.forEach((video) => {
+        const id = `${video.source}:${video.id}`
+        const order = orderMap[id]
+        acc.videosMap[id] = acc.videosOrdered[order] = video
+      })
+      return acc
+    },
+    { videosMap: {}, videosOrdered: [] }
+  )
+  return result
 }
