@@ -9,25 +9,20 @@ export class Video extends LitElement {
   `
 
   static properties = {
-    id: { type: String },
-    source: { type: String },
-    title: { type: String },
-    description: { type: String },
-    thumbUrl: { type: String },
-    durationSeconds: { type: Number },
+    video: { type: Object },
   }
 
   get _formattedDuration() {
-    return secondsToDuration(this.durationSeconds)
+    return secondsToDuration(this.video.durationSeconds)
   }
 
   render() {
-    const { id, source, title, description, thumbUrl, _formattedDuration } =
-      this
+    if (!this.video) return
+    const { id, source, title, description, thumbUrl } = this.video
     return html`
       <article>
         <h1>${source}: ${title}</h1>
-        <h2>${_formattedDuration}</h2>
+        <h2>${this._formattedDuration}</h2>
         <img src="${thumbUrl}" alt="${title}" />
       </article>
     `

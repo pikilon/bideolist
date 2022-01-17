@@ -29,34 +29,15 @@ export class MainWrapper extends LitElement {
   }
 
   render() {
-    const { formattedDuration, videos, duration } = this._videosInfo
+    const { formattedDuration, videos } = this._videosInfo
+    if (!videos?.length) return
 
-    return duration
-      ? html`
-          <p>Bideolist! ${formattedDuration}</p>
-          <div>
-            ${videos.map(
-              ({
-                id,
-                source,
-                title,
-                description,
-                thumbUrl,
-                durationSeconds,
-              }) => html`
-                <bl-video
-                  id=${id}
-                  source=${source}
-                  title=${title}
-                  description=${description}
-                  thumbUrl=${thumbUrl}
-                  durationSeconds=${durationSeconds}
-                ></bl-video>
-              `
-            )}
-          </div>
-        `
-      : html`<p>Loading...</p>`
+    return html`
+      <p>Bideolist! ${formattedDuration}</p>
+      ${videos.map(
+        (video) => html`<bl-video video=${JSON.stringify(video)}></bl-video>`
+      )}
+    `
   }
 }
 
