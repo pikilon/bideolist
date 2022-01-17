@@ -11,43 +11,52 @@ const sourcesArray = [
 
 export const generateVideosString = (sourceIdArray) =>
   sourceIdArray.map(({ source, id }) => `${source}:${id}`).join(",")
-const getVideosFromString = (videosString) =>
-  videosString.split(",").map((videoParam, order) => {
-    const [source, id] = videoParam.split(":")
-    return { source, id, order }
-  })
-export const fetchAllVideosFromString = (videosString) =>
-  fetchAllVideos(getVideosFromString(videosString))
 
-export const fetchAllVideos = async (sourceIdArray) => {
-  const { orderMap, ...videosBySource } = sourceIdArray.reduce(
-    (acc, { source, id, order }) => {
-      if (acc[source]) acc[source].push(id)
-      acc.orderMap[`${source}:${id}`] = order
-      return acc
-    },
-    {
-      [SOURCES.YOUTUBE.ID]: [],
-      [SOURCES.DAILYMOTION.ID]: [],
-      [SOURCES.VIMEO.ID]: [],
-      orderMap: {},
-    }
-  )
+const getVideosFromString = (videosString) => {
+  const videosArray = videosString.split(",")
+  const videos = []
+  const bySource = {
+    [SOURCES.YOUTUBE.ID]: [],
+    [SOURCES.DAILYMOTION.ID]: [],
+    [SOURCES.VIMEO.ID]: [],
+  }
+  const orderMap = {};
+  for (const videoParam of videosArray) {
+    const [source, id] = videoParam.split(":")
+    const order = videos.length;
+
+    videos.push({ source, id })
+    orderMap[videoParam] = order
+    bySource[source].push(id)
+    
+  }
+
+  return { videos, orderMap, bySource }
+}
+export const fetchAllVideosFromString = (videosString) => {
+  const videos = getVideosFromString(videosString)
+
+  return fetchAllVideos(videos)
+}
+
+export const fetchAllVideos = async ({ orderMap, bySource }) => {
   const allVideosPromises = sourcesArray.map(({ id, fetch }) => {
-    const ids = videosBySource[id]
+    const ids = bySource[id]
     return fetch(ids)
   })
-  const allVideos = await Promise.all(allVideosPromises)
-  const result = allVideos.reduce(
-    (acc, videos) => {
-      videos.forEach((video) => {
-        const id = `${video.source}:${video.id}`
-        const order = orderMap[id]
-        acc.videosMap[id] = acc.videosOrdered[order] = video
-      })
-      return acc
-    },
-    { videosMap: {}, videosOrdered: [] }
-  )
-  return result
+  const allVideos = (await Promise.all(allVideosPromises)).flat()
+
+  const videosMap = {}
+  const orderedVideos = []
+  let duration = 0
+
+  for (const video of allVideos) {
+    const id = `${video.source}:${video.id}`
+    const order = orderMap[id]
+
+    videosMap[id] = orderedVideos[order] = video
+    duration += video.durationSeconds
+  }
+
+  return { videos: orderedVideos, videosMap, duration }
 }
