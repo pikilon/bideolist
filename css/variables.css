@@ -1,0 +1,12 @@
+:root {
+  /* font families */
+  --font-main: 'Roboto', sans-serif;
+  --font-handwriting: 'Permanent Marker', cursive;
+  --font-typewriter:  'Special Elite', cursive;
+
+  /* colors */
+  --color-light: #fafafa;
+  --font-main: var(--color-light);
+
+
+}

@@ -1,0 +1,15 @@
+body {
+  --bg-radial: radial-gradient(
+    at center center,
+    rgb(78, 78, 78) 50%,
+    rgb(38, 38, 38) 100%
+  );
+
+  color: var(--font-main);
+  background: url("/images/background.png"), var(--bg-radial);
+}
+
+a {
+  font-family: var(--font-handwriting);
+  color: inherit;
+}

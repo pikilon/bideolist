@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "https://unpkg.com/lit?module"
+import { html, css, LitElement } from "lit"
 import { secondsToDuration } from "../secondsToDuration.js"
 
 export class Video extends LitElement {

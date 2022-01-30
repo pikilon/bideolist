@@ -1,0 +1,24 @@
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+}
+/*
+  3. Allow percentage-based heights in the application
+*/
+html, body {
+  font-size: 0.7cm;
+  font-family: var(--font-main);
+  height: 100%;
+}
+/*
+  Typographic tweaks!
+  4. Add accessible line-height
+  5. Improve text rendering
+*/
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}

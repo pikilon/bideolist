@@ -1,4 +1,4 @@
-import { html, css, LitElement } from "https://unpkg.com/lit?module"
+import { html, css, LitElement } from "lit"
 import { fetchAllVideosFromString } from "./api/fetchAllVideos.js"
 import { secondsToDuration } from "./secondsToDuration.js"
 import "./components/video.js"
