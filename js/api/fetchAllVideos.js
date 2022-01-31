@@ -12,8 +12,7 @@ const sourcesArray = [
 export const generateVideosString = (sourceIdArray) =>
   sourceIdArray.map(({ source, id }) => `${source}:${id}`).join(",")
 
-const getVideosFromString = (videosString) => {
-  const videosArray = videosString.split(",")
+const getVideosFromString = (compoundIds) => {
   const videos = []
   const bySource = {
     [SOURCES.YOUTUBE.ID]: [],
@@ -21,20 +20,19 @@ const getVideosFromString = (videosString) => {
     [SOURCES.VIMEO.ID]: [],
   }
   const orderMap = {};
-  for (const videoParam of videosArray) {
+  for (const videoParam of compoundIds) {
     const [source, id] = videoParam.split(":")
     const order = videos.length;
 
     videos.push({ source, id })
     orderMap[videoParam] = order
     bySource[source].push(id)
-    
   }
 
   return { videos, orderMap, bySource }
 }
-export const fetchAllVideosFromString = (videosString) => {
-  const videos = getVideosFromString(videosString)
+export const fetchAllVideosFromString = (compoundIds) => {
+  const videos = getVideosFromString(compoundIds)
 
   return fetchAllVideos(videos)
 }

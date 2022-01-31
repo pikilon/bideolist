@@ -1,5 +1,4 @@
-
-import { SOURCES } from "../constants.js";
+import { SOURCES } from "../constants.js"
 import { VIMEO_API_KEY } from "../../config.js"
 
 const headers = {
@@ -14,7 +13,7 @@ const headers = {
 // https://api.vimeo.com/videos?uris=%2Fvideos%2F253497000,%2Fvideos%2F81329596
 
 export const fetchVimeoVideos = async (id) => {
-  if (!id || id.length === 0) return [];
+  if (!id || id.length === 0) return []
   const ids = Array.isArray(id) ? id : [id]
   const fields = [
     "uri",
@@ -48,12 +47,16 @@ const formatVimeoVideo = ({
   duration,
   width,
   height,
-}) => ({
-  id: extractIdFromVimeoUrl(uri),
-  source: SOURCES.VIMEO.ID,
-  title: name,
-  description: description,
-  thumbUrl: pictures.sizes[1].link,
-  durationSeconds: duration,
-  aspectRatio: width / height,
-})
+}) => {
+  const id = extractIdFromVimeoUrl(uri)
+  return {
+    id,
+    componsedId: `${SOURCES.VIMEO.ID}:${id}`,
+    source: SOURCES.VIMEO.ID,
+    title: name,
+    description: description,
+    thumbUrl: pictures.sizes[1].link,
+    durationSeconds: duration,
+    aspectRatio: width / height,
+  }
+}

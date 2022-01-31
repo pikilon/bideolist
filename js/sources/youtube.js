@@ -1,12 +1,12 @@
 //https://developers.google.com/youtube/v3/getting-started?hl=es#Sample_Partial_Requests
 
-import { SOURCES } from "../constants.js";
+import { SOURCES } from "../constants.js"
 import { YOUTUBE_API_KEY } from "/config.js"
 
 const wrapUrlWithApiKey = (url) => `${url}&key=${YOUTUBE_API_KEY}`
 
 export const youtubeFetchVideos = async (id) => {
-  if (!id || id.length === 0) return [];
+  if (!id || id.length === 0) return []
   const ids = Array.isArray(id) ? id : [id]
   const idString = ids.join(",")
   const url = [
@@ -39,6 +39,7 @@ const formatYoutubeVideo = (video) => {
   const durationSeconds = getYoutubeVideoDurationSeconds(duration)
   return {
     id,
+    componsedId: `${SOURCES.YOUTUBE.ID}:${id}`,
     source: SOURCES.YOUTUBE.ID,
     title,
     description,
