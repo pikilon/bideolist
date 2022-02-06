@@ -9,7 +9,7 @@
   3. Allow percentage-based heights in the application
 */
 html, body {
-  font-size: 0.7cm;
+  font-size: 0.45cm;
   font-family: var(--font-main);
   height: 100%;
 }

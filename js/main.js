@@ -13,8 +13,8 @@ const getListInfoFromUrl = () => {
 }
 export class MainWrapper extends LitElement {
   static styles = css`
-    p {
-      color: "blue";
+    .video + .video {
+      margin-top: var(--gap-small);
     }
   `
 
@@ -23,10 +23,12 @@ export class MainWrapper extends LitElement {
     videos: { type: Array, state: true },
     duration: { type: Number, state: true },
     formattedDuration: { type: String, state: true },
+    selectedVideoIndex: { type: Number, state: true },
   }
 
   constructor() {
     super()
+    this.selectedVideoIndex = 0
     this.getVideosInfo()
 
     window.addEventListener("locationchange", () => {
@@ -67,13 +69,21 @@ export class MainWrapper extends LitElement {
   }
 
   render() {
-    const { formattedDuration, videos } = this
+    const { formattedDuration, videos, selectedVideoIndex } = this
     if (!videos?.length) return
 
     return html`
       <p>Bideolist! ${formattedDuration}</p>
+
       ${videos.map(
-        (video) => html`<bl-video video=${JSON.stringify(video)}></bl-video>`
+        (video, index) => html`
+          <div class="video">
+            <bl-video
+              video=${JSON.stringify(video)}
+              ?active="${index === selectedVideoIndex}"
+            ></bl-video>
+          </div>
+        `
       )}
     `
   }

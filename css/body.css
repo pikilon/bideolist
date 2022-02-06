@@ -4,8 +4,8 @@ body {
     rgb(78, 78, 78) 50%,
     rgb(38, 38, 38) 100%
   );
-
-  color: var(--font-main);
+  font-family: var(--font-main);
+  color: var(--color-font-main);
   background: url("/images/background.png"), var(--bg-radial);
 }
 
