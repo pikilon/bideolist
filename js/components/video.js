@@ -1,6 +1,7 @@
 import { html, css, LitElement } from "lit"
 import { classMap } from "lit/directives/class-map.js"
 import { secondsToDuration } from "../secondsToDuration.js"
+import { setUrlParams } from "../store/store.js"
 import "./source-icon.js"
 
 export class Video extends LitElement {
@@ -15,6 +16,8 @@ export class Video extends LitElement {
       border-radius: 0.5em;
       overflow: hidden;
       border: 3px solid transparent;
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
     }
     .active {
       border-color: var(--color-primary);
@@ -63,6 +66,11 @@ export class Video extends LitElement {
   static properties = {
     video: { type: Object },
     active: { type: Boolean },
+    index: { type: Number },
+  }
+
+  setActive = () => {
+    setUrlParams({ activeVideo: this.index })
   }
 
   get _formattedDuration() {
@@ -74,7 +82,7 @@ export class Video extends LitElement {
     const { video, active } = this
     const { id, source, title, description, thumbUrl } = video
     return html`
-      <article class=${classMap({ active })}>
+      <article class=${classMap({ active })} @click=${this.setActive}>
         <div class="thumb">
           <img src="${thumbUrl}" alt="${title}" />
           <div class="hoverThumb">

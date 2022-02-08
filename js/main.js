@@ -1,8 +1,12 @@
 import { html, css, LitElement } from "lit"
-import { fetchAllVideosFromString } from "./api/fetchAllVideos.js"
+import { fetchAllVideosFromCompundsIds } from "./api/fetchAllVideos.js"
 import { secondsToDuration } from "./secondsToDuration.js"
 import "./components/video.js"
-import { updateAllVideos, STORE_NAMES, storeSelector } from "./store/store.js"
+import {
+  setVideosDictionary,
+  STORE_NAMES,
+  storeSelector,
+} from "./store/store.js"
 import { subscribe } from "./store/bus.js"
 
 const getListInfoFromUrl = () => {
@@ -28,33 +32,39 @@ export class MainWrapper extends LitElement {
 
   constructor() {
     super()
-    this.selectedVideoIndex = 0
+    this.getListUrlParams()
     this.getVideosInfo()
 
-    window.addEventListener("locationchange", () => {
-      this.getVideosInfo()
-    })
+    fetchAllVideosFromCompundsIds(this.compoundIds).then(setVideosDictionary)
 
-    fetchAllVideosFromString(this.compoundIds).then((videosInfo) => {
-      updateAllVideos(videosInfo)
-    })
+    this.unsubscribeUrlParams = subscribe(
+      STORE_NAMES.URL,
+      this.getListUrlParams
+    )
+
     this.unsubscribeVideosMap = subscribe(
       STORE_NAMES.VIDEOS_DICTIONARY,
       this.getVideosInfo
     )
   }
   disconnectedCallback() {
+    this.unsubscribeUrlParams()
     this.unsubscribeVideosMap()
   }
 
+  getListUrlParams = () => {
+    const { compoundIds, activeVideo } = storeSelector(STORE_NAMES.URL)
+    this.compoundIds = compoundIds
+    this.selectedVideoIndex = activeVideo
+  }
+
   getVideosInfo = () => {
-    const { compoundIds } = getListInfoFromUrl()
     const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
     let duration = 0
     let videos = []
     const weHaveVideoInfo = Object.keys(videosMap).length
     if (weHaveVideoInfo) {
-      for (const id of compoundIds) {
+      for (const id of this.compoundIds) {
         const video = videosMap[id]
         if (!video) continue
         videos.push(video)
@@ -62,7 +72,6 @@ export class MainWrapper extends LitElement {
       }
     }
 
-    this.compoundIds = compoundIds
     this.videos = videos
     this.duration = duration
     this.formattedDuration = secondsToDuration(duration) || "00:00:00"
@@ -81,6 +90,7 @@ export class MainWrapper extends LitElement {
             <bl-video
               video=${JSON.stringify(video)}
               ?active="${index === selectedVideoIndex}"
+              index="${index}"
             ></bl-video>
           </div>
         `

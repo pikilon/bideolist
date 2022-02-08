@@ -7,5 +7,4 @@ export const subscribe = (eventName, callbackDetail) => {
 
 export const emit = (eventName, payload) => {
   eventBusComment.dispatchEvent(new CustomEvent(eventName, { detail: payload }))
-  console.log(`Emitted ${eventName} with payload:`, payload)
 }

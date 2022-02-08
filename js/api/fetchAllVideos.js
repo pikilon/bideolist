@@ -19,42 +19,31 @@ const getVideosFromString = (compoundIds) => {
     [SOURCES.DAILYMOTION.ID]: [],
     [SOURCES.VIMEO.ID]: [],
   }
-  const orderMap = {};
   for (const videoParam of compoundIds) {
     const [source, id] = videoParam.split(":")
-    const order = videos.length;
-
-    videos.push({ source, id })
-    orderMap[videoParam] = order
     bySource[source].push(id)
   }
 
-  return { videos, orderMap, bySource }
+  return bySource
 }
-export const fetchAllVideosFromString = (compoundIds) => {
+export const fetchAllVideosFromCompundsIds = (compoundIds) => {
   const videos = getVideosFromString(compoundIds)
 
   return fetchAllVideos(videos)
 }
 
-export const fetchAllVideos = async ({ orderMap, bySource }) => {
+export const fetchAllVideos = async (bySource) => {
   const allVideosPromises = sourcesArray.map(({ id, fetch }) => {
     const ids = bySource[id]
     return fetch(ids)
   })
   const allVideos = (await Promise.all(allVideosPromises)).flat()
-
   const videosMap = {}
-  const orderedVideos = []
-  let duration = 0
-
   for (const video of allVideos) {
     const id = `${video.source}:${video.id}`
-    const order = orderMap[id]
 
-    videosMap[id] = orderedVideos[order] = video
-    duration += video.durationSeconds
+    videosMap[id] = video
   }
 
-  return { videos: orderedVideos, videosMap, duration }
+  return videosMap
 }

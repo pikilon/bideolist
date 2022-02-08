@@ -1,9 +1,10 @@
 import { subscribe, emit } from "./bus.js"
+import { getListInfoFromUrl, reflectInUrl } from "./url.js"
+import { areEqual } from "../utils/areEqual.js"
 
 export const STORE_NAMES = {
   VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
-  VIDEOS: "VIDEOS",
-  DURATION: "DURATION",
+  URL: "URL",
 }
 
 const localStorageVideosDictionary = localStorage.getItem(
@@ -15,40 +16,43 @@ const videosDictionaryFirstValue = localStorageVideosDictionary
 
 const storeHistory = {
   [STORE_NAMES.VIDEOS_DICTIONARY]: [videosDictionaryFirstValue],
-  [STORE_NAMES.VIDEOS]: [],
-  [STORE_NAMES.DURATION]: [],
+  [STORE_NAMES.URL]: [getListInfoFromUrl()],
 }
 
 const persistStorage = (storeName, value) => {
   localStorage.setItem(storeName, JSON.stringify(value))
 }
 
-const storeSetter =
-  (storeName, persist = false) =>
-  (value) => {
-    const storeSlice = storeHistory[storeName]
-    storeSlice.push(value)
-    if (persist) persistStorage(storeName, value)
-    console.log("storeHistory", storeName, storeSlice)
-    emit(storeName, value)
-  }
 export const storeSelector = (storeName) => {
   const storeSlice = storeHistory[storeName]
 
   return storeSlice[storeSlice.length - 1]
 }
 
+const storeSetter =  // returns if emitted
+  (storeName, persist = false) =>
+  (value) => {
+    const storeSlice = storeHistory[storeName]
+    const currentValue = storeSelector(storeName)
+    const sameValue = areEqual(currentValue, value)
+
+    if (sameValue) return false
+    storeSlice.push(value)
+    if (persist) persistStorage(storeName, value)
+    console.log("storeHistory", storeName, storeSlice)
+    emit(storeName, value)
+    return true
+  }
+
 export const setVideosDictionary = (value) => {
   const newValue = { ...storeSelector(STORE_NAMES.VIDEOS_DICTIONARY), ...value }
   storeSetter(STORE_NAMES.VIDEOS_DICTIONARY, true)(newValue)
 }
-export const setVideos = storeSetter(STORE_NAMES.VIDEOS)
-export const setDuration = storeSetter(STORE_NAMES.DURATION)
 
-export const updateAllVideos = ({ videos, videosMap, duration }) => {
-  setVideosDictionary(videosMap)
-  setVideos({ ...storeSelector(STORE_NAMES.VIDEOS_DICTIONARY), ...videos })
-  setDuration(duration)
+export const setUrlParams = (partialListInfo) => {
+  const newValue = { ...storeSelector(STORE_NAMES.URL), ...partialListInfo }
+  storeSetter(STORE_NAMES.URL, true)(newValue)
+  reflectInUrl(newValue)
 }
 
 export const addVideo = (video) => {
