@@ -82,16 +82,18 @@ export class Video extends LitElement {
     const { video, active } = this
     const { id, source, title, description, thumbUrl } = video
     return html`
-      <article class=${classMap({ active })} @click=${this.setActive}>
+      <article class=${classMap({ active })}>
         <div class="thumb">
-          <img src="${thumbUrl}" alt="${title}" />
+          <img src="${thumbUrl}" alt="${title}" @click=${this.setActive} />
           <div class="hoverThumb">
             <bl-source-icon source=${source} id="${id}"></bl-source-icon>
-            <span class="duration">${this._formattedDuration}</span>
+            <span class="duration" @click=${this.setActive}
+              >${this._formattedDuration}</span
+            >
           </div>
         </div>
 
-        <h1>${title}</h1>
+        <h1 @click=${this.setActive}>${title}</h1>
       </article>
     `
   }

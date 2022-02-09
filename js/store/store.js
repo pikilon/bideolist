@@ -1,4 +1,4 @@
-import { subscribe, emit } from "./bus.js"
+import { emit } from "./bus.js"
 import { getListInfoFromUrl, reflectInUrl } from "./url.js"
 import { areEqual } from "../utils/areEqual.js"
 

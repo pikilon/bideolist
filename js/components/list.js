@@ -1,13 +1,13 @@
 import { html, css, LitElement } from "lit"
-import { fetchAllVideosFromCompundsIds } from "./api/fetchAllVideos.js"
-import { secondsToDuration } from "./secondsToDuration.js"
-import "./components/video.js"
+import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
+import { secondsToDuration } from "../secondsToDuration.js"
+import "./video.js"
 import {
   setVideosDictionary,
   STORE_NAMES,
   storeSelector,
-} from "./store/store.js"
-import { subscribe } from "./store/bus.js"
+} from "../store/store.js"
+import { subscribe } from "../store/bus.js"
 
 const getListInfoFromUrl = () => {
   const queryParams = new URLSearchParams(window.location.search)
