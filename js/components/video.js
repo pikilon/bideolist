@@ -29,10 +29,12 @@ export class Video extends LitElement {
       justify-content: center;
       position: relative;
       margin-right: var(--gap-small);
+      height: 90px;
+      background-color: var(--color-dark);
     }
     .hoverThumb {
       position: absolute;
-      bottom: 0;
+      bottom: var(--gap-extra-small);
       left: 0;
       width: 100%;
       display: flex;

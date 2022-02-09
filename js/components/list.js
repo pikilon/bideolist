@@ -60,21 +60,16 @@ export class MainWrapper extends LitElement {
 
   getVideosInfo = () => {
     const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
-    let duration = 0
     let videos = []
     const weHaveVideoInfo = Object.keys(videosMap).length
     if (weHaveVideoInfo) {
       for (const id of this.compoundIds) {
         const video = videosMap[id]
-        if (!video) continue
-        videos.push(video)
-        duration += video?.durationSeconds || 0
+        if (video) videos.push(video)
       }
     }
 
     this.videos = videos
-    this.duration = duration
-    this.formattedDuration = secondsToDuration(duration) || "00:00:00"
   }
 
   render() {
@@ -82,8 +77,6 @@ export class MainWrapper extends LitElement {
     if (!videos?.length) return
 
     return html`
-      <p>Bideolist! ${formattedDuration}</p>
-
       ${videos.map(
         (video, index) => html`
           <div class="video">
@@ -99,4 +92,4 @@ export class MainWrapper extends LitElement {
   }
 }
 
-customElements.define("bl-main", MainWrapper)
+customElements.define("bl-list", MainWrapper)

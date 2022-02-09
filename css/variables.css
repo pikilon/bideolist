@@ -20,4 +20,7 @@
   --gap-large: 1.5rem;
   --gap-extra-large: 2rem;
 
+  /* widths */
+  --width-container: 40rem;
+
 }
