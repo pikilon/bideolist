@@ -1,13 +1,7 @@
 import { html, css, LitElement } from "lit"
-import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
 import "./video.js"
-import {
-  setVideosDictionary,
-  STORE_NAMES,
-  storeSelector,
-} from "../store/store.js"
 import { subscribeVideosDuration } from "../store/computed.js"
-export class MainWrapper extends LitElement {
+export class BList extends LitElement {
   static styles = css`
     .video + .video {
       margin-top: var(--gap-small);
@@ -54,4 +48,4 @@ export class MainWrapper extends LitElement {
   }
 }
 
-customElements.define("bl-list", MainWrapper)
+customElements.define("bl-list", BList)
