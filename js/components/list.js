@@ -1,20 +1,12 @@
 import { html, css, LitElement } from "lit"
 import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
-import { secondsToDuration } from "../secondsToDuration.js"
 import "./video.js"
 import {
   setVideosDictionary,
   STORE_NAMES,
   storeSelector,
 } from "../store/store.js"
-import { subscribe } from "../store/bus.js"
-
-const getListInfoFromUrl = () => {
-  const queryParams = new URLSearchParams(window.location.search)
-  const videosString = queryParams.get("videos")
-  const compoundIds = videosString?.split(",") || []
-  return { compoundIds }
-}
+import { subscribeVideosDuration } from "../store/computed.js"
 export class MainWrapper extends LitElement {
   static styles = css`
     .video + .video {
@@ -23,57 +15,27 @@ export class MainWrapper extends LitElement {
   `
 
   static properties = {
-    compoundIds: { type: Array, state: true },
     videos: { type: Array, state: true },
-    duration: { type: Number, state: true },
-    formattedDuration: { type: String, state: true },
     selectedVideoIndex: { type: Number, state: true },
   }
 
   constructor() {
     super()
-    this.getListUrlParams()
-    this.getVideosInfo()
-
-    fetchAllVideosFromCompundsIds(this.compoundIds).then(setVideosDictionary)
-
-    this.unsubscribeUrlParams = subscribe(
-      STORE_NAMES.URL,
-      this.getListUrlParams
-    )
-
-    this.unsubscribeVideosMap = subscribe(
-      STORE_NAMES.VIDEOS_DICTIONARY,
-      this.getVideosInfo
-    )
+    const [videosSelectedVideoIndex, unsubscribeVideosIndex] =
+      subscribeVideosDuration(this.setValues)
+    this.setValues(videosSelectedVideoIndex)
+    this.unsubscribeVideosIndex = unsubscribeVideosIndex
   }
   disconnectedCallback() {
-    this.unsubscribeUrlParams()
-    this.unsubscribeVideosMap()
+    this.unsubscribeVideosIndex()
   }
-
-  getListUrlParams = () => {
-    const { compoundIds, activeVideo } = storeSelector(STORE_NAMES.URL)
-    this.compoundIds = compoundIds
+  setValues = ({ videos, activeVideo }) => {
+    this.videos = videos
     this.selectedVideoIndex = activeVideo
   }
 
-  getVideosInfo = () => {
-    const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
-    let videos = []
-    const weHaveVideoInfo = Object.keys(videosMap).length
-    if (weHaveVideoInfo) {
-      for (const id of this.compoundIds) {
-        const video = videosMap[id]
-        if (video) videos.push(video)
-      }
-    }
-
-    this.videos = videos
-  }
-
   render() {
-    const { formattedDuration, videos, selectedVideoIndex } = this
+    const { videos, selectedVideoIndex } = this
     if (!videos?.length) return
 
     return html`

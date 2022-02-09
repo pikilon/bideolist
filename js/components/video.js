@@ -1,6 +1,6 @@
 import { html, css, LitElement } from "lit"
 import { classMap } from "lit/directives/class-map.js"
-import { secondsToDuration } from "../secondsToDuration.js"
+import { secondsToDuration } from "../utils/secondsToDuration.js"
 import { setUrlParams } from "../store/store.js"
 import "./source-icon.js"
 
