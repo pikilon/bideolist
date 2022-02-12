@@ -3,7 +3,7 @@ import { STORE_NAMES, storeSelector } from "./store.js"
 
 export const selectVideosAndDurations = () => {
   const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
-  const { compoundIds, activeVideo, listName } = storeSelector(STORE_NAMES.URL)
+  const { videos: compoundIds, active, title } = storeSelector(STORE_NAMES.URL)
 
   const videos = []
   let duration = 0
@@ -14,10 +14,17 @@ export const selectVideosAndDurations = () => {
     if (!video) continue
     videos.push(video)
     duration += video.durationSeconds
-    if (index < activeVideo) durationBefore += video.durationSeconds
+    if (index < active) durationBefore += video.durationSeconds
   }
 
-  return { videos, duration, durationBefore, compoundIds, listName, activeVideo }
+  return {
+    videos,
+    duration,
+    durationBefore,
+    compoundIds,
+    title,
+    active,
+  }
 }
 
 export const subscribeVideosDuration = (callback) => {

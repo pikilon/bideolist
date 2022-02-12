@@ -23,9 +23,9 @@ export class BList extends LitElement {
   disconnectedCallback() {
     this.unsubscribeVideosIndex()
   }
-  setValues = ({ videos, activeVideo }) => {
+  setValues = ({ videos, active }) => {
     this.videos = videos
-    this.selectedVideoIndex = activeVideo
+    this.selectedVideoIndex = active
   }
 
   render() {

@@ -72,7 +72,7 @@ export class Video extends LitElement {
   }
 
   setActive = () => {
-    setUrlParams({ activeVideo: this.index })
+    setUrlParams({ active: this.index })
   }
 
   get _formattedDuration() {
@@ -82,7 +82,7 @@ export class Video extends LitElement {
   render() {
     if (!this.video) return
     const { video, active } = this
-    const { id, source, title, description, thumbUrl } = video
+    const { id, source, title, thumbUrl } = video
     return html`
       <article class=${classMap({ active })}>
         <div class="thumb">

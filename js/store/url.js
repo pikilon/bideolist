@@ -1,17 +1,23 @@
+export const URL_PARAMS_STORE = {
+  TITLE: "title",
+  VIDEOS: "videos",
+  ACTIVE: "active",
+}
+
 export const getListInfoFromUrl = () => {
   const queryParams = new URLSearchParams(window.location.search)
-  const videosString = queryParams.get("videos")
-  const listName = queryParams.get("name") || "untitled"
-  const activeVideo = Number(queryParams.get("active")) || 0
-  const compoundIds = videosString?.split(",") || []
-  return { compoundIds, listName, activeVideo }
+  const videosString = queryParams.get(URL_PARAMS_STORE.VIDEOS)
+  const title = queryParams.get(URL_PARAMS_STORE.TITLE) || "untitled"
+  const active = Number(queryParams.get(URL_PARAMS_STORE.ACTIVE)) || 0
+  const videos = videosString?.split(",") || []
+  return { videos, title, active }
 }
 
 export const reflectInUrl = (listInfo) => {
-  const { compoundIds, listName, activeVideo } = listInfo
+  const { videos, title, active } = listInfo
   window.history.pushState(
     listInfo,
-    listName,
-    `?videos=${compoundIds.join(",")}&name=${listName}&active=${activeVideo}`
+    title,
+    `?videos=${videos.join(",")}&name=${title}&active=${active}`
   )
 }

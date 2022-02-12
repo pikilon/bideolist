@@ -1,10 +1,11 @@
 import { emit } from "./bus.js"
-import { getListInfoFromUrl, reflectInUrl } from "./url.js"
+import { getListInfoFromUrl, reflectInUrl, URL_PARAMS_STORE } from "./url.js"
 import { areEqual } from "../utils/areEqual.js"
 
 export const STORE_NAMES = {
   VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
   URL: "URL",
+  ...URL_PARAMS_STORE,
 }
 
 const localStorageVideosDictionary = localStorage.getItem(
@@ -14,9 +15,14 @@ const videosDictionaryFirstValue = localStorageVideosDictionary
   ? JSON.parse(localStorageVideosDictionary)
   : {}
 
+const { videos, title, active } = getListInfoFromUrl()
+
 const storeHistory = {
   [STORE_NAMES.VIDEOS_DICTIONARY]: [videosDictionaryFirstValue],
   [STORE_NAMES.URL]: [getListInfoFromUrl()],
+  [STORE_NAMES.VIDEOS]: [videos],
+  [STORE_NAMES.TITLE]: [title],
+  [STORE_NAMES.ACTIVE]: [active],
 }
 
 const persistStorage = (storeName, value) => {

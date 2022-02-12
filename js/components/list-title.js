@@ -13,7 +13,8 @@ export class SourceIcon extends LitElement {
       color: var(--color-dark);
       padding: var(--gap-medium);
     }
-    h1, h2 {
+    h1,
+    h2 {
       display: inline;
     }
     h1 {
@@ -21,19 +22,19 @@ export class SourceIcon extends LitElement {
       margin-right: var(--gap-small);
     }
   `
-  setNameDuration = ({ listName, duration }) => {
-    this.name = listName
+  setTitleDuration = ({ title, duration }) => {
+    this.name = title
     this.duration = duration
   }
   constructor() {
     super()
     this.name = "untitled"
     this.duration = 0
-    const [nameDuration, unsubscribeNameDuration] = subscribeVideosDuration(
-      this.setNameDuration
+    const [titleDuration, unsubscribeNameDuration] = subscribeVideosDuration(
+      this.setTitleDuration
     )
 
-    this.setNameDuration(nameDuration)
+    this.setTitleDuration(titleDuration)
     this.unsubscribeNameDuration = unsubscribeNameDuration
   }
   disconnectedCallback() {
