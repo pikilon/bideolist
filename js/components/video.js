@@ -1,7 +1,7 @@
 import { html, css, LitElement } from "lit"
 import { classMap } from "lit/directives/class-map.js"
 import { secondsToDuration } from "../utils/secondsToDuration.js"
-import { setUrlParams } from "../store/store.js"
+import { setActive } from "../store/store.js"
 import "./source-icon.js"
 
 export class Video extends LitElement {
@@ -71,9 +71,7 @@ export class Video extends LitElement {
     index: { type: Number },
   }
 
-  setActive = () => {
-    setUrlParams({ active: this.index })
-  }
+  setActive = () => setActive(this.index)
 
   get _formattedDuration() {
     return secondsToDuration(this.video.durationSeconds)
@@ -89,7 +87,7 @@ export class Video extends LitElement {
           <img src="${thumbUrl}" alt="${title}" @click=${this.setActive} />
           <div class="hoverThumb">
             <bl-source-icon source=${source} id="${id}"></bl-source-icon>
-            <span class="duration" @click=${this.setActive}
+            <span class="duration" @click=${setActive}
               >${this._formattedDuration}</span
             >
           </div>

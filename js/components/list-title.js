@@ -1,10 +1,11 @@
 import { html, css, LitElement } from "lit"
-import { subscribeVideosDuration } from "../store/computed.js"
+import { getUnsubscribeVideosDuration } from "../store/computed.js"
+import { getUnsubscribeValue, STORE_NAMES } from "../store/store.js"
 import { secondsToDuration } from "../utils/secondsToDuration.js"
 
 export class SourceIcon extends LitElement {
   static properties = {
-    name: { type: String, state: true },
+    title: { type: String, state: true },
     duration: { type: Number, state: true },
   }
   static styles = css`
@@ -23,28 +24,33 @@ export class SourceIcon extends LitElement {
     }
   `
   setTitleDuration = ({ title, duration }) => {
-    this.name = title
+    this.title = title
     this.duration = duration
   }
   constructor() {
     super()
-    this.name = "untitled"
-    this.duration = 0
-    const [titleDuration, unsubscribeNameDuration] = subscribeVideosDuration(
-      this.setTitleDuration
-    )
+    const unsubscribeVideos = getUnsubscribeVideosDuration(({ duration }) => {
+      this.duration = duration
+    })
+    const unsubscribeTitle = getUnsubscribeValue({
+      storeName: STORE_NAMES.TITLE,
+      callback: (title) => (this.title = title),
+    })
 
-    this.setTitleDuration(titleDuration)
-    this.unsubscribeNameDuration = unsubscribeNameDuration
+    this.unsubscribeAll = () => {
+      unsubscribeVideos()
+      unsubscribeTitle()
+    }
   }
+
   disconnectedCallback() {
-    this.unsubscribeNameDuration()
+    this.unsubscribeAll()
   }
   render() {
-    const { name = "untitled", duration = 0 } = this
+    const { title = "untitled", duration = 0 } = this
     return html`
       <div class="list-title">
-        <h1>${name}</h1>
+        <h1>${title}</h1>
         <h2>${secondsToDuration(duration)}</h2>
       </div>
     `

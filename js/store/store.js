@@ -1,10 +1,9 @@
-import { emit } from "./bus.js"
+import { emit, subscribe } from "./bus.js"
 import { getListInfoFromUrl, reflectInUrl, URL_PARAMS_STORE } from "./url.js"
 import { areEqual } from "../utils/areEqual.js"
 
 export const STORE_NAMES = {
   VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
-  URL: "URL",
   ...URL_PARAMS_STORE,
 }
 
@@ -19,7 +18,6 @@ const { videos, title, active } = getListInfoFromUrl()
 
 const storeHistory = {
   [STORE_NAMES.VIDEOS_DICTIONARY]: [videosDictionaryFirstValue],
-  [STORE_NAMES.URL]: [getListInfoFromUrl()],
   [STORE_NAMES.VIDEOS]: [videos],
   [STORE_NAMES.TITLE]: [title],
   [STORE_NAMES.ACTIVE]: [active],
@@ -55,11 +53,24 @@ export const setVideosDictionary = (value) => {
   storeSetter(STORE_NAMES.VIDEOS_DICTIONARY, true)(newValue)
 }
 
-export const setUrlParams = (partialListInfo) => {
-  const newValue = { ...storeSelector(STORE_NAMES.URL), ...partialListInfo }
-  storeSetter(STORE_NAMES.URL, true)(newValue)
-  reflectInUrl(newValue)
+export const getUnsubscribeValue = ({
+  storeName,
+  callback,
+  initialize = true,
+}) => {
+  const callbackWrapper = () => callback(storeSelector(storeName))
+  if (initialize) callbackWrapper()
+  const currentValue = storeSelector(storeName)
+  const unsubscribe = subscribe(storeName, callbackWrapper)
+  return [unsubscribe, currentValue]
 }
+
+const setUrlParameters = (storeUrlName) => (value) => {
+  storeSetter(storeUrlName)(value)
+  reflectInUrl({ [storeUrlName]: value })
+}
+
+export const setActive = setUrlParameters(STORE_NAMES.ACTIVE)
 
 export const addVideo = (video) => {
   const videos = [...storeSelector(STORE_NAMES.VIDEOS), video]

@@ -1,6 +1,7 @@
 import { html, css, LitElement } from "lit"
 import "./video.js"
-import { subscribeVideosDuration } from "../store/computed.js"
+import { getUnsubscribeVideosDuration } from "../store/computed.js"
+import { getUnsubscribeValue, STORE_NAMES } from "../store/store.js"
 export class BList extends LitElement {
   static styles = css`
     .video + .video {
@@ -15,17 +16,25 @@ export class BList extends LitElement {
 
   constructor() {
     super()
-    const [videosSelectedVideoIndex, unsubscribeVideosIndex] =
-      subscribeVideosDuration(this.setValues)
-    this.setValues(videosSelectedVideoIndex)
-    this.unsubscribeVideosIndex = unsubscribeVideosIndex
+    const [unsubscribeActive] = getUnsubscribeValue({
+      storeName: STORE_NAMES.ACTIVE,
+      callback: (active) => (this.selectedVideoIndex = active),
+    })
+
+    const unsubscribeVideos = getUnsubscribeVideosDuration(({ videos }) => {
+      this.videos = videos
+    })
+
+    this.unsubscribeAll = () => {
+      unsubscribeActive()
+      unsubscribeVideos()
+    }
   }
   disconnectedCallback() {
-    this.unsubscribeVideosIndex()
+    this.unsubscribeAll()
   }
-  setValues = ({ videos, active }) => {
+  setValues = ({ videos }) => {
     this.videos = videos
-    this.selectedVideoIndex = active
   }
 
   render() {

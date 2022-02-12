@@ -1,4 +1,5 @@
-const eventBusComment = new Comment("event-bus");
+const eventBusComment = new Comment("event-bus")
+
 export const subscribe = (eventName, callbackDetail) => {
   const callback = ({ detail }) => callbackDetail(detail)
   eventBusComment.addEventListener(eventName, callback)

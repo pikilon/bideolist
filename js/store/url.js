@@ -14,10 +14,11 @@ export const getListInfoFromUrl = () => {
 }
 
 export const reflectInUrl = (listInfo) => {
-  const { videos, title, active } = listInfo
+  const finalListInfo = { ...getListInfoFromUrl(), ...listInfo }
+  const { videos, title, active } = finalListInfo
   window.history.pushState(
     listInfo,
     title,
-    `?videos=${videos.join(",")}&name=${title}&active=${active}`
+    `?videos=${videos.join(",")}&title=${title}&active=${active}`
   )
 }
