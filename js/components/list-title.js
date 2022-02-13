@@ -2,6 +2,7 @@ import { html, css, LitElement } from "lit"
 import { getUnsubscribeVideosDuration } from "../store/computed.js"
 import { getUnsubscribeValue, STORE_NAMES } from "../store/store.js"
 import { secondsToDuration } from "../utils/secondsToDuration.js"
+import "./label.js"
 
 export class SourceIcon extends LitElement {
   static properties = {
@@ -10,17 +11,11 @@ export class SourceIcon extends LitElement {
   }
   static styles = css`
     .list-title {
-      background-color: var(--color-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--color-dark);
       padding: var(--gap-medium);
-    }
-    h1,
-    h2 {
-      display: inline;
-    }
-    h1 {
-      font-family: var(--font-handwriting);
-      margin-right: var(--gap-small);
     }
   `
   setTitleDuration = ({ title, duration }) => {
@@ -50,8 +45,10 @@ export class SourceIcon extends LitElement {
     const { title = "untitled", duration = 0 } = this
     return html`
       <div class="list-title">
-        <h1>${title}</h1>
-        <h2>${secondsToDuration(duration)}</h2>
+        <bl-label>
+          <h1>${title}</h1>
+          <h2>${secondsToDuration(duration)}</h2>
+        </bl-label>
       </div>
     `
   }

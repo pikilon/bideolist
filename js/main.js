@@ -15,9 +15,9 @@ export class MainWrapper extends LitElement {
 
   render() {
     return html`
-      <header class="container title">
+      <div class="title">
         <bl-list-title></bl-list-title>
-      </header>
+      </div>
       <div class="container video-list">
         <bl-list></bl-list>
       </div>

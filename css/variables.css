@@ -1,13 +1,13 @@
 :root {
   /* font families */
-  --font-main: 'Roboto', sans-serif;
-  --font-handwriting: 'Permanent Marker', cursive;
-  --font-typewriter:  'Special Elite', cursive;
+  --font-main: "Roboto", sans-serif;
+  --font-handwriting: "Permanent Marker", cursive;
+  --font-typewriter: "Special Elite", cursive;
 
   /* colors */
   --color-light: #fafafa;
   --color-dark: #222;
-  --color-primary: #ff00ff;
+  --color-primary: #e0006f;
   --color-font-main: var(--color-light);
   --color-youtube: #ff0000;
   --color-dailymotion: #0d0d0d;
@@ -22,5 +22,4 @@
 
   /* widths */
   --width-container: 40rem;
-
 }
