@@ -53,6 +53,39 @@ export const subscribeVideosDurationBefore = (videosDurationBeforeCallback) => {
   return unsubscribe
 }
 
+export const subscribeActiveVideo = (activeVideoCallback) => {
+  const wrapperCallback = () => {
+    const active = storeSelector(STORE_NAMES.ACTIVE)
+    const videos = storeSelector(STORE_NAMES.VIDEOS)
+    const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
+    const activeId = videos[active]
+    const activeVideo = videosMap[activeId]
+    activeVideoCallback(activeVideo)
+  }
+  const unsubscribeActive = getUnsubscribeValue({
+    storeName: STORE_NAMES.ACTIVE,
+    callback: wrapperCallback,
+  })
+  const unsubscribeVideos = getUnsubscribeValue({
+    storeName: STORE_NAMES.VIDEOS,
+    callback: wrapperCallback,
+  })
+  const unsubscribeVideosMap = getUnsubscribeValue({
+    storeName: STORE_NAMES.VIDEOS_DICTIONARY,
+    callback: wrapperCallback,
+  })
+
+  wrapperCallback()
+
+  const unsubscribe = () => {
+    unsubscribeActive()
+    unsubscribeVideos()
+    unsubscribeVideosMap()
+  }
+
+  return unsubscribe
+}
+
 export const getUnsubscribeVideosDuration = (videosDurationCallback) => {
   const callback = () => {
     const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)

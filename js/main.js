@@ -1,14 +1,13 @@
 import { html, css, LitElement } from "lit"
 import "./components/list.js"
 import "./components/list-title.js"
+import "./components/player.js"
+import { container } from "../css/utility-classes.css.js"
 
 export class MainWrapper extends LitElement {
   static styles = css`
-    .container {
-      max-width: var(--width-container);
-      margin: 0 auto;
-    }
-    .title {
+    ${container}
+    .title, .player {
       margin-bottom: var(--gap-medium);
     }
   `
@@ -17,6 +16,9 @@ export class MainWrapper extends LitElement {
     return html`
       <div class="title">
         <bl-list-title></bl-list-title>
+      </div>
+      <div class="player">
+        <bl-player></bl-player>
       </div>
       <div class="container video-list">
         <bl-list></bl-list>

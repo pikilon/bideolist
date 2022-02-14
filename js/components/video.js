@@ -3,13 +3,12 @@ import { classMap } from "lit/directives/class-map.js"
 import { secondsToDuration } from "../utils/secondsToDuration.js"
 import { setActive } from "../store/store.js"
 import "./source-icon.js"
+import { resetAll } from "../../css/utility-classes.css.js"
 
 export class Video extends LitElement {
   static styles = css`
-    * {
-      padding: 0;
-      margin: 0;
-    }
+    ${resetAll}
+
     article {
       display: flex;
       align-items: center;
