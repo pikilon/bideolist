@@ -3,6 +3,7 @@ import { classMap } from "lit/directives/class-map.js"
 import { loadScript } from "../utils/loadScript.js"
 import { container, resetAll } from "../../css/utility-classes.css.js"
 import { subscribeActiveVideo } from "../store/computed.js"
+import { storeSelector, STORE_NAMES, setActive } from "../store/store.js"
 
 const PLAYER_ID = "player"
 
@@ -38,12 +39,20 @@ class Player extends LitElement {
     })
   }
 
+  nextVideo = () => {
+    const nextIndex = storeSelector(STORE_NAMES.ACTIVE) + 1
+    const videos = storeSelector(STORE_NAMES.VIDEOS)
+
+    if (nextIndex < videos.length) setActive(nextIndex)
+  }
+
   destroyPlayer = () => {
     if (this.player) this.player.destroy()
   }
 
   onPlayerStateChange = (event) => {
-    console.log("event", event)
+    const { data } = event
+    if (data === YT.PlayerState.ENDED) this.nextVideo()
   }
 
   onPlayerReady = (event) => {
@@ -63,13 +72,11 @@ class Player extends LitElement {
       height: "100%",
       width: "100%",
       videoId: this.video.id,
-
-      // events: {
-      //   onReady: this.onPlayerReady,
-      //   onStateChange: this.onPlayerStateChange,
-      // },
+      events: {
+        onReady: this.onPlayerReady,
+        onStateChange: this.onPlayerStateChange,
+      },
     })
-    console.log("this.player", this.player)
   }
   toggleWide = () => (this.isWide = !this.isWide)
 
