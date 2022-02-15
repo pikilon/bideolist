@@ -39,6 +39,7 @@ const formatYoutubeVideo = (video) => {
   const durationSeconds = getYoutubeVideoDurationSeconds(duration)
   return {
     id,
+    url: `https://www.youtube.com/watch?v=${id}`,
     componsedId: `${SOURCES.YOUTUBE.ID}:${id}`,
     source: SOURCES.YOUTUBE.ID,
     title,

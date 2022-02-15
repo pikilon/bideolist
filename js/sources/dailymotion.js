@@ -27,6 +27,7 @@ const formatDailymotionVideo = ({
   aspect_ratio,
 }) => ({
   id,
+  url: `https://www.dailymotion.com/video/${id}`,
   componsedId: `${SOURCES.DAILYMOTION.ID}:${id}`,
   source: SOURCES.DAILYMOTION.ID,
   title,

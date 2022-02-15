@@ -3,9 +3,21 @@ import { classMap } from "lit/directives/class-map.js"
 import { loadScript } from "../utils/loadScript.js"
 import { container, resetAll } from "../../css/utility-classes.css.js"
 import { subscribeActiveVideo } from "../store/computed.js"
-import { storeSelector, STORE_NAMES, setActive } from "../store/store.js"
+import {
+  storeSelector,
+  STORE_NAMES,
+  setActive,
+  setCurrentVideoElapsedSeconds,
+} from "../store/store.js"
 
 const PLAYER_ID = "player"
+
+const DEFAULT_OPTIONS = {
+  playing: true,
+  controls: true,
+  width: "100%",
+  height: "100%",
+}
 
 class Player extends LitElement {
   static properties = {
@@ -20,68 +32,67 @@ class Player extends LitElement {
       aspect-ratio: 16/9;
     }
   `
-  setTitleDuration = ({ title, duration }) => {
-    this.title = title
-    this.duration = duration
-  }
   constructor() {
     super()
-    this.player = null
+    this.playedSeconds = 0
+    this.playing = true
 
     this.unsubscribeActiveVideo = subscribeActiveVideo((video) => {
+      if (!video?.id) return
       const isSameVideo =
         video.id === this.video?.id && video.source === this.video?.source
       if (isSameVideo) return
-      this.destroyPlayer()
-      console.log("isSameVideo", isSameVideo)
       this.video = video
       this.createPlayer()
     })
   }
 
-  nextVideo = () => {
+  onEnded = () => {
     const nextIndex = storeSelector(STORE_NAMES.ACTIVE) + 1
     const videos = storeSelector(STORE_NAMES.VIDEOS)
 
     if (nextIndex < videos.length) setActive(nextIndex)
   }
+  onProgress = ({ playedSeconds }) =>
+    setCurrentVideoElapsedSeconds(Math.round(playedSeconds))
 
-  destroyPlayer = () => {
-    if (this.player) this.player.destroy()
-  }
+  getOptions = () => ({
+    url: this.video.url,
+    playing: this.playing,
+    controls: true,
+    width: "100%",
+    onEnded: this.onEnded,
+    onProgress: this.onProgress,
+  })
 
   onPlayerStateChange = (event) => {
     const { data } = event
-    if (data === YT.PlayerState.ENDED) this.nextVideo()
+    if (data === YT.PlayerState.ENDED) this.onEnded()
   }
 
-  onPlayerReady = (event) => {
-    event.target.playVideo()
+  togglePlayPause = () => {
+    this.playing = !this.playing
+    this.setPlayer({ playing: this.playing })
   }
 
   createPlayer = () => {
-    loadScript("https://www.youtube.com/iframe_api").then(() => {
-      window.YT.ready(this.setPlayer)
-    })
+    loadScript(
+      // https://github.com/cookpete/react-player#standalone-player
+      "https://unpkg.com/react-player@2.9.0/dist/ReactPlayer.standalone.js"
+    ).then(this.setPlayer)
   }
 
-  setPlayer = () => {
+  setPlayer = (options = {}) => {
+    if (!this.video.url) return
+    const { renderReactPlayer } = window
+    const finalOptions = { ...this.getOptions(), ...options }
     const playerTag = this.shadowRoot.getElementById(PLAYER_ID)
-
-    this.player = new YT.Player(playerTag, {
-      height: "100%",
-      width: "100%",
-      videoId: this.video.id,
-      events: {
-        onReady: this.onPlayerReady,
-        onStateChange: this.onPlayerStateChange,
-      },
-    })
+    renderReactPlayer(playerTag, finalOptions)
   }
   toggleWide = () => (this.isWide = !this.isWide)
 
   render() {
-    const { isWide, toggleWide } = this
+    const { isWide, toggleWide, togglePlayPause } = this
     return html`
       <div
         class=${classMap({
@@ -90,7 +101,10 @@ class Player extends LitElement {
         })}
       >
         <div id=${PLAYER_ID}></div>
+      </div>
+      <div class="container">
         <button @click=${toggleWide}>Toggle wide</button>
+        <button @click=${togglePlayPause}>Toggle Play/Pause</button>
       </div>
     `
   }

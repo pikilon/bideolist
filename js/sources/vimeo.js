@@ -51,6 +51,7 @@ const formatVimeoVideo = ({
   const id = extractIdFromVimeoUrl(uri)
   return {
     id,
+    url: `https://vimeo.com/${id}`,	
     componsedId: `${SOURCES.VIMEO.ID}:${id}`,
     source: SOURCES.VIMEO.ID,
     title: name,

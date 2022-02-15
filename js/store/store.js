@@ -4,6 +4,7 @@ import { areEqual } from "../utils/areEqual.js"
 
 export const STORE_NAMES = {
   VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
+  CURRENT_VIDEO_ELAPSED_SECONDS: "CURRENT_VIDEO_ELAPSED_SECONDS",
   ...URL_PARAMS_STORE,
 }
 
@@ -15,6 +16,11 @@ const videosDictionaryFirstValue = localStorageVideosDictionary
   : {}
 
 const { videos, title, active } = getListInfoFromUrl()
+
+// No historic store
+const store = {
+  [STORE_NAMES.CURRENT_VIDEO_ELAPSED_SECONDS]: 0,
+}
 
 const storeHistory = {
   [STORE_NAMES.VIDEOS_DICTIONARY]: [videosDictionaryFirstValue],
@@ -33,6 +39,14 @@ export const storeSelector = (storeName) => {
   return storeSlice[storeSlice.length - 1]
 }
 
+export const setCurrentVideoElapsedSeconds = (seconds) => {
+  const storeName = STORE_NAMES.CURRENT_VIDEO_ELAPSED_SECONDS
+  const currentValue = store[storeName]
+  const sameValue = areEqual(currentValue, seconds)
+  if (sameValue) return
+  store[storeName] = seconds
+  emit(storeName, seconds)
+}
 const storeSetter =  // returns if emitted
   (storeName, persist = false) =>
   (value) => {
