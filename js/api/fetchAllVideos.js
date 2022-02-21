@@ -12,8 +12,7 @@ const sourcesArray = [
 export const generateVideosString = (sourceIdArray) =>
   sourceIdArray.map(({ source, id }) => `${source}:${id}`).join(",")
 
-const getVideosFromString = (compoundIds) => {
-  const videos = []
+export const sortVideosBySource = (compoundIds) => {
   const bySource = {
     [SOURCES.YOUTUBE.ID]: [],
     [SOURCES.DAILYMOTION.ID]: [],
@@ -27,7 +26,7 @@ const getVideosFromString = (compoundIds) => {
   return bySource
 }
 export const fetchAllVideosFromCompundsIds = (compoundIds) => {
-  const videos = getVideosFromString(compoundIds)
+  const videos = sortVideosBySource(compoundIds)
 
   return fetchAllVideos(videos)
 }

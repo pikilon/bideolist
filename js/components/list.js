@@ -1,7 +1,11 @@
 import { html, css, LitElement } from "lit"
 import "./video.js"
 import { getUnsubscribeVideosDuration } from "../store/computed.js"
-import { getUnsubscribeValue, STORE_NAMES, setVideosDictionary } from "../store/store.js"
+import {
+  getUnsubscribeValue,
+  STORE_NAMES,
+  setVideosDictionary,
+} from "../store/store.js"
 import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
 export class BList extends LitElement {
   static styles = css`
