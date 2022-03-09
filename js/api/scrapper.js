@@ -2,6 +2,11 @@ import { SOURCES, SOURCES_BY_ID } from "../constants.js"
 import { dailymotionFetchVideos } from "../sources/dailymotion.js"
 import { sortVideosBySource } from "./fetchAllVideos.js"
 
+const THUMBNAILS_URLS = {
+  [SOURCES.YOUTUBE.ID]: (id) => `https://img.youtube.com/vi/${id}/1.jpg`,
+  [SOURCES.VIMEO.ID]: (id) => `https://vumbnail.com/${id}_medium.jpg`,
+}
+
 const generateSearchUrl = (source, ids) =>
   `https://www.google.com/search?tbm=vid&hl=en&q=${ids.join("+OR+")}+site:${
     SOURCES_BY_ID[source].SITE
@@ -25,16 +30,16 @@ const DURATION_SELECTOR = "[aria-label][role='presentation']"
 const videosParser = (parsedHtmlResults, url) => {
   const hrefHeader = `a[href='${url}'][data-ved]`
   const headerTag = parsedHtmlResults.querySelector(hrefHeader)
-  if (!headerTag) return {}
+  if (!headerTag) {
+    debugger;
+    return {}
+  }
   const card = headerTag.parentElement.parentElement
   const durationString = card.querySelector(DURATION_SELECTOR).innerText || ""
   const durationSeconds = getDurationInSeconds(durationString)
-  const thumbUrl = card.querySelector("img").src
-  console.log("thumbUrl", thumbUrl)
   const title = headerTag.querySelector("h3").innerText
   const video = {
     title,
-    thumbUrl,
     durationSeconds,
     durationString,
   }
@@ -43,16 +48,8 @@ const videosParser = (parsedHtmlResults, url) => {
 
 const scrapSearchResults = async (source, ids) => {
   const searchUrl = generateSearchUrl(source, ids)
-  console.log("searchUrl", searchUrl)
-  const html = await fetch(searchUrl, {
-    credentials: "include",
-    mode: "cors",
-    headers: ({
-      origin: "https://www.google.com",
-      referer: "https://www.google.com",
-    }),
-  }).then((res) => res.text())
-  if (source === SOURCES.VIMEO.ID) console.log("html", html)
+
+  const html = await fetch(searchUrl).then((res) => res.text())
   const parser = new DOMParser()
   const parsedHtmlResults = parser.parseFromString(html, "text/html")
   const videosMap = {}
@@ -60,9 +57,12 @@ const scrapSearchResults = async (source, ids) => {
     const url = `${SOURCES_BY_ID[source].VIDEO_URL}${id}`
     const componsedId = `${source}:${id}`
     const video = videosParser(parsedHtmlResults, url)
+    const thumbUrl = THUMBNAILS_URLS?.[source](id) || ""
+
     videosMap[componsedId] = {
       id,
       url,
+      thumbUrl,
       componsedId,
       source,
       ...video,
