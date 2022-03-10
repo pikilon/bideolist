@@ -1,15 +1,23 @@
 import * as functions from "firebase-functions"
-import fetch from "cross-fetch"
+import { youtubeFetchVideos } from "./sources/youtube"
+import initCors from "cors"
 
-// // Start writing Firebase Functions
-// // https://firebase.google.com/docs/functions/typescript
-//
-export const getVideosInfo = functions.https.onRequest(
-  async (request, response) => {
-    const twitchUrl = "https://www.twitch.tv/videos/1267815693"
-    const twitchResponse = await fetch(twitchUrl)
-    const twitchData = await twitchResponse.text();
-    functions.logger.info("Hello logs!", { structuredData: true })
-    response.send("Hello from Firebase!" + `<textarea>${twitchData}</textarea>`)
-  }
+const cors = initCors({ origin: true })
+
+export const youtube = functions.https.onRequest(async (request, response) =>
+  cors(request, response, async () => {
+    if (request.method !== "GET") {
+      response.status(405).send("Method not allowed")
+      return
+    }
+    const { ids } = request.query
+    if (!ids) {
+      response.status(400).send("Missing ids")
+      return
+    }
+
+    const videos = await youtubeFetchVideos((ids as string).split(","))
+    response.json(videos)
+    response.end()
+  })
 )

@@ -1,6 +1,6 @@
 import { SOURCES } from "../constants"
 import fetch from "cross-fetch"
-//https://developers.google.com/youtube/v3/getting-started?hl=es#Sample_Partial_Requests
+// https://developers.google.com/youtube/v3/getting-started?hl=es#Sample_Partial_Requests
 
 type YoutubeVideoType = {
   id: string
@@ -19,6 +19,7 @@ export const youtubeFetchVideos = async (id: string | string[]) => {
   const url = [
     "https://www.googleapis.com/youtube/v3/videos" +
       "?part=snippet,contentDetails",
+    // eslint-disable-next-line max-len
     "fields=items(id,snippet(title,description,thumbnails),contentDetails(duration,projection))",
     `id=${idString}`,
     `key=${process.env.YOUTUBE_API_KEY}`,
@@ -26,7 +27,6 @@ export const youtubeFetchVideos = async (id: string | string[]) => {
   const { items: videos }: { items: Array<YoutubeVideoType> } = await fetch(
     url
   ).then((res) => res.json())
-  console.log('videos', videos);
   const formmatedVideos = videos.map(formatYoutubeVideo)
   return formmatedVideos
 }
@@ -62,6 +62,5 @@ const formatYoutubeVideo = (video: YoutubeVideoType) => {
   }
 }
 
-const EXAMPLE_IDS = ["7lCDEYXw3mM", "RUyTN9hajHY", "YEW_UFm4Xe4"]
-
-youtubeFetchVideos(EXAMPLE_IDS).then(console.log)
+// const EXAMPLE_IDS = ["7lCDEYXw3mM", "RUyTN9hajHY", "YEW_UFm4Xe4"]
+// youtubeFetchVideos(EXAMPLE_IDS).then(console.log)
