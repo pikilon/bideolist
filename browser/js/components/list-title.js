@@ -1,5 +1,5 @@
 import { html, css, LitElement } from "lit"
-import { getUnsubscribeVideosDuration } from "../store/computed.js"
+import { getUnsubscribeVideosTotalDuration } from "../store/computed.js"
 import { getUnsubscribeValue, STORE_NAMES } from "../store/store.js"
 import { secondsToDuration } from "../utils/secondsToDuration.js"
 import "./label.js"
@@ -24,8 +24,8 @@ export class SourceIcon extends LitElement {
   }
   constructor() {
     super()
-    const unsubscribeVideos = getUnsubscribeVideosDuration(({ duration }) => {
-      this.duration = duration
+    const unsubscribeVideos = getUnsubscribeVideosTotalDuration(({ totalDuration }) => {
+      this.duration = totalDuration
     })
     const unsubscribeTitle = getUnsubscribeValue({
       storeName: STORE_NAMES.TITLE,

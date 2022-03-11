@@ -70,21 +70,32 @@ export const setVideosDictionary = (value) => {
 export const getUnsubscribeValue = ({
   storeName,
   callback,
-  initialize = true,
+  noHistory = false,
 }) => {
-  const callbackWrapper = () => callback(storeSelector(storeName))
-  if (initialize) callbackWrapper()
-  const currentValue = storeSelector(storeName)
-  const unsubscribe = subscribe(storeName, callbackWrapper)
-  return [unsubscribe, currentValue]
+  const callbackWrapper = () =>
+    callback(noHistory ? store[storeName] : storeSelector(storeName))
+  callbackWrapper()
+  return subscribe(storeName, callbackWrapper)
 }
+
+export const getUnsubscribeCurrentVideoElapsedSeconds = (callback) =>
+  getUnsubscribeValue({
+    storeName: STORE_NAMES.CURRENT_VIDEO_ELAPSED_SECONDS,
+    callback,
+    noHistory: true,
+  })
 
 const setUrlParameters = (storeUrlName) => (value) => {
   storeSetter(storeUrlName)(value)
   reflectInUrl({ [storeUrlName]: value })
 }
 
-export const setActive = setUrlParameters(STORE_NAMES.ACTIVE)
+export const setActive = (value) => {
+  const isSameIndex = areEqual(storeSelector(STORE_NAMES.ACTIVE), value)
+  if (isSameIndex) return
+  setUrlParameters(STORE_NAMES.ACTIVE)(value)
+  setCurrentVideoElapsedSeconds(0);
+}
 
 export const addVideo = (video) => {
   const videos = [...storeSelector(STORE_NAMES.VIDEOS), video]

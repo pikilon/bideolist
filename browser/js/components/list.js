@@ -2,7 +2,7 @@ import { html, css, LitElement } from "lit"
 import "./video.js"
 import {
   filterUnknowVideos,
-  getUnsubscribeVideosDuration,
+  getUnsubscribeVideosTotalDuration,
 } from "../store/computed.js"
 import {
   getUnsubscribeValue,
@@ -25,28 +25,23 @@ export class BList extends LitElement {
 
   constructor() {
     super()
-    const [unsubscribeActive] = getUnsubscribeValue({
+    const unsubscribeActive = getUnsubscribeValue({
       storeName: STORE_NAMES.ACTIVE,
       callback: (active) => (this.selectedVideoIndex = active),
     })
-    const [unsubscribeVideos] = getUnsubscribeValue({
-      storeName: STORE_NAMES.VIDEOS,
-      callback: (compoundIds) => {
+
+    const unsubscribeVideosInfo = getUnsubscribeVideosTotalDuration(
+      ({ videos, compoundIds }) => {
+        this.videos = videos
+
         const unknownVideos = filterUnknowVideos(compoundIds)
         if (!unknownVideos.length) return
-
         fetchAllVideosFromCompundsIds(unknownVideos).then(setVideosDictionary)
-      },
-      initialize: true,
-    })
-
-    const unsubscribeVideosInfo = getUnsubscribeVideosDuration(({ videos }) => {
-      this.videos = videos
-    })
+      }
+    )
 
     this.unsubscribeAll = () => {
       unsubscribeActive()
-      unsubscribeVideos()
       unsubscribeVideosInfo()
     }
   }
