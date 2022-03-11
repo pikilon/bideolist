@@ -24,6 +24,14 @@ const getVideosDurationBefore = (videos, active) => {
   return durationBefore
 }
 
+export const filterUnknowVideos = (compoundIds) => {
+  const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
+  const unknownVideos = compoundIds.filter(
+    (composedId) => !videosMap[composedId]
+  )
+  return unknownVideos
+}
+
 export const subscribeVideosDurationBefore = (videosDurationBeforeCallback) => {
   let result = {
     videos: [],

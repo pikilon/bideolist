@@ -1,12 +1,16 @@
 import { html, css, LitElement } from "lit"
 import "./video.js"
-import { getUnsubscribeVideosDuration } from "../store/computed.js"
+import {
+  filterUnknowVideos,
+  getUnsubscribeVideosDuration,
+} from "../store/computed.js"
 import {
   getUnsubscribeValue,
   STORE_NAMES,
   setVideosDictionary,
 } from "../store/store.js"
 import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
+
 export class BList extends LitElement {
   static styles = css`
     .video + .video {
@@ -28,7 +32,10 @@ export class BList extends LitElement {
     const [unsubscribeVideos] = getUnsubscribeValue({
       storeName: STORE_NAMES.VIDEOS,
       callback: (compoundIds) => {
-        fetchAllVideosFromCompundsIds(compoundIds).then(setVideosDictionary)
+        const unknownVideos = filterUnknowVideos(compoundIds)
+        if (!unknownVideos.length) return
+
+        fetchAllVideosFromCompundsIds(unknownVideos).then(setVideosDictionary)
       },
       initialize: true,
     })
