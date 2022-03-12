@@ -28,7 +28,7 @@ const formatDailymotionVideo = ({
 }) => ({
   id,
   url: `https://www.dailymotion.com/video/${id}`,
-  componsedId: `${SOURCES.DAILYMOTION.ID}:${id}`,
+  composedId: `${SOURCES.DAILYMOTION.ID}:${id}`,
   source: SOURCES.DAILYMOTION.ID,
   title,
   description,

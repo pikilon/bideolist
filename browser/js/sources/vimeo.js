@@ -27,7 +27,7 @@ const formatVimeoVideo = ({
   return {
     id,
     url: `https://vimeo.com/${id}`,	
-    componsedId: `${SOURCES.VIMEO.ID}:${id}`,
+    composedId: `${SOURCES.VIMEO.ID}:${id}`,
     source: SOURCES.VIMEO.ID,
     title,
     description: description,

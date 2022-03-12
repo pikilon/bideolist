@@ -36,15 +36,23 @@ class Player extends LitElement {
     super()
     this.playedSeconds = 0
     this.playing = true
+    this.debounceVideoUpdate = null
 
     this.unsubscribeActiveVideo = subscribeActiveVideo((video) => {
-      if (!video?.id) return
-      const isSameVideo =
-        video.id === this.video?.id && video.source === this.video?.source
-      if (isSameVideo) return
-      this.video = video
-      this.createPlayer()
+      clearTimeout(this.debounceVideoUpdate)
+      this.debounceVideoUpdate = setTimeout(() => {
+        if (!video?.id) return
+        const isSameVideo =
+          video.id === this.video?.id && video.source === this.video?.source
+        if (isSameVideo) return
+        this.video = video
+        this.createPlayer()
+      }, 100)
     })
+  }
+  disconnectedCallback() {
+    this.unsubscribeActiveVideo()
+    clearTimeout(this.debounceVideoUpdate)
   }
 
   onEnded = () => {

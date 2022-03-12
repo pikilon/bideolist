@@ -52,7 +52,7 @@ const formatYoutubeVideo = (video: YoutubeVideoType) => {
   return {
     id,
     url: `https://www.youtube.com/watch?v=${id}`,
-    componsedId: `${SOURCES.YOUTUBE.ID}:${id}`,
+    composedId: `${SOURCES.YOUTUBE.ID}:${id}`,
     source: SOURCES.YOUTUBE.ID,
     title,
     description,

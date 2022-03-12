@@ -101,14 +101,11 @@ export const setActive = (value) => {
   setCurrentVideoElapsedSeconds(0)
 }
 
-export const addVideo = (video) => {
-  const videos = [...storeSelector(STORE_NAMES.VIDEOS), video]
-  const videosMap = {
-    ...storeSelector(STORE_NAMES.VIDEOS_DICTIONARY),
-    [video.composedId]: video,
-  }
-  const duration = storeSelector(STORE_NAMES.DURATION) + video.durationSeconds
-  updateAllVideos({ videos, videosMap, duration })
+export const addVideo = (composedId) => {
+  const newVideos = [composedId, ...storeSelector(STORE_NAMES.VIDEOS)]
+  const newActive = storeSelector(STORE_NAMES.ACTIVE) + 1
+  setUrlParameters(STORE_NAMES.VIDEOS)(newVideos)
+  setUrlParameters(STORE_NAMES.ACTIVE)(newActive)
 }
 
 export const removeVideo = (video) => {
