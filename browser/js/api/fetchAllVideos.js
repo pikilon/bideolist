@@ -26,9 +26,8 @@ export const sortVideosBySource = (compoundIds) => {
   return bySource
 }
 export const fetchAllVideosFromCompundsIds = (compoundIds) => {
-  const videos = sortVideosBySource(compoundIds)
-
-  return fetchAllVideos(videos)
+  const videosSorted = sortVideosBySource(compoundIds)
+  return fetchAllVideos(videosSorted)
 }
 
 export const fetchAllVideos = async (bySource) => {

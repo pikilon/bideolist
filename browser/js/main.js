@@ -3,6 +3,7 @@ import "./components/list.js"
 import "./components/list-title.js"
 import "./components/player.js"
 import "./components/progress-bar.js"
+import "./components/bl-search.js"
 import { container } from "../css/utility-classes.css.js"
 
 export class MainWrapper extends LitElement {
@@ -11,7 +12,8 @@ export class MainWrapper extends LitElement {
     .player {
       margin-bottom: var(--gap-small);
     }
-    .title, .progress {
+    .title,
+    .progress {
       margin-bottom: var(--gap-medium);
     }
   `
@@ -23,6 +25,9 @@ export class MainWrapper extends LitElement {
       </div>
       <div class="player">
         <bl-player></bl-player>
+      </div>
+      <div class="container search">
+        <bl-search></bl-search>
       </div>
       <div class="container progress">
         <progress-bar></progress-bar>

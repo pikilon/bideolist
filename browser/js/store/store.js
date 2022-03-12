@@ -1,6 +1,7 @@
 import { emit, subscribe } from "./bus.js"
 import { getListInfoFromUrl, reflectInUrl, URL_PARAMS_STORE } from "./url.js"
 import { areEqual } from "../utils/areEqual.js"
+import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
 
 export const STORE_NAMES = {
   VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
@@ -62,8 +63,11 @@ const storeSetter =  // returns if emitted
     return true
   }
 
-export const setVideosDictionary = (value) => {
-  const newValue = { ...storeSelector(STORE_NAMES.VIDEOS_DICTIONARY), ...value }
+export const setVideosDictionary = (videosMap) => {
+  const newValue = {
+    ...storeSelector(STORE_NAMES.VIDEOS_DICTIONARY),
+    ...videosMap,
+  }
   storeSetter(STORE_NAMES.VIDEOS_DICTIONARY, true)(newValue)
 }
 
@@ -94,7 +98,7 @@ export const setActive = (value) => {
   const isSameIndex = areEqual(storeSelector(STORE_NAMES.ACTIVE), value)
   if (isSameIndex) return
   setUrlParameters(STORE_NAMES.ACTIVE)(value)
-  setCurrentVideoElapsedSeconds(0);
+  setCurrentVideoElapsedSeconds(0)
 }
 
 export const addVideo = (video) => {
@@ -114,4 +118,20 @@ export const removeVideo = (video) => {
   const duration = storeSelector(STORE_NAMES.DURATION) - video.durationSeconds
   setVideos(videos)
   setDuration(duration)
+}
+
+export const fetchNewVideos = async (composedIds) => {
+  const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
+  const unkownVideos = composedIds.filter(
+    (composedId) => !videosMap[composedId]
+  )
+  const newVideosMap = await fetchAllVideosFromCompundsIds(unkownVideos)
+  setVideosDictionary(newVideosMap)
+  const videos = []
+  const updatedVideosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
+  for (let composedId of composedIds) {
+    const video = updatedVideosMap[composedId]
+    if (video) videos.push(video)
+  }
+  return videos
 }
