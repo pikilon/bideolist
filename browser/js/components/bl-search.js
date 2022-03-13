@@ -1,6 +1,6 @@
 import { html, css, LitElement } from "lit"
 import { search } from "../api/search.js"
-import { addVideo } from "../store/store.js"
+import { addVideo } from "../store/edit-videos-order.js"
 
 const MILLISECONDS_TO_SUBMIT = 5 * 1000
 export class Search extends LitElement {
@@ -50,7 +50,6 @@ export class Search extends LitElement {
     if (shouldClearVideos) this.videos = []
   }
   handleResultClick = (video) => () => {
-    debugger
     addVideo(video.composedId)
   }
 

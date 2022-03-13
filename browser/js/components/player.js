@@ -12,12 +12,7 @@ import {
 
 const PLAYER_ID = "player"
 
-const DEFAULT_OPTIONS = {
-  playing: true,
-  controls: true,
-  width: "100%",
-  height: "100%",
-}
+const DEBOUNCE_TIME = 10;
 
 class Player extends LitElement {
   static properties = {
@@ -47,7 +42,7 @@ class Player extends LitElement {
         if (isSameVideo) return
         this.video = video
         this.createPlayer()
-      }, 100)
+      }, DEBOUNCE_TIME)
     })
   }
   disconnectedCallback() {

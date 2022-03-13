@@ -89,32 +89,16 @@ export const getUnsubscribeCurrentVideoElapsedSeconds = (callback) =>
     noHistory: true,
   })
 
-const setUrlParameters = (storeUrlName) => (value) => {
+export const setUrlParameters = (storeUrlName) => (value) => {
   storeSetter(storeUrlName)(value)
   reflectInUrl({ [storeUrlName]: value })
 }
 
-export const setActive = (value) => {
-  const isSameIndex = areEqual(storeSelector(STORE_NAMES.ACTIVE), value)
+export const setActive = (newIndex) => {
+  const isSameIndex = areEqual(storeSelector(STORE_NAMES.ACTIVE), newIndex)
   if (isSameIndex) return
-  setUrlParameters(STORE_NAMES.ACTIVE)(value)
+  setUrlParameters(STORE_NAMES.ACTIVE)(newIndex)
   setCurrentVideoElapsedSeconds(0)
-}
-
-export const addVideo = (composedId) => {
-  const newVideos = [composedId, ...storeSelector(STORE_NAMES.VIDEOS)]
-  const newActive = storeSelector(STORE_NAMES.ACTIVE) + 1
-  setUrlParameters(STORE_NAMES.VIDEOS)(newVideos)
-  setUrlParameters(STORE_NAMES.ACTIVE)(newActive)
-}
-
-export const removeVideo = (video) => {
-  const videos = storeSelector(STORE_NAMES.VIDEOS).filter(
-    ({ composedId }) => video.composedId !== composedId
-  )
-  const duration = storeSelector(STORE_NAMES.DURATION) - video.durationSeconds
-  setVideos(videos)
-  setDuration(duration)
 }
 
 export const fetchNewVideos = async (composedIds) => {

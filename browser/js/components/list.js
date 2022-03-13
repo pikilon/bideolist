@@ -1,4 +1,6 @@
 import { html, css, LitElement } from "lit"
+import { classMap } from "lit/directives/class-map.js"
+
 import "./video.js"
 import { getUnsubscribeVideosTotalDuration } from "../store/computed.js"
 import {
@@ -6,24 +8,54 @@ import {
   STORE_NAMES,
   fetchNewVideos,
 } from "../store/store.js"
+import { removeVideo, moveVideo } from "../store/edit-videos-order.js"
 
 export class BList extends LitElement {
+  static properties = {
+    videos: { type: Array, state: true },
+    activeVideo: { type: Number, state: true },
+    draggingIndex: { type: Number, state: true },
+    draggingOverIndex: { type: Number, state: true },
+  }
+
   static styles = css`
+    .video {
+      display: flex;
+      align-items: center;
+    }
     .video + .video {
       margin-top: var(--gap-small);
     }
-  `
+    .handle {
+      font-size: 2em;
+      width: 0.5em;
+      word-break: break-all;
+      line-height: 0.2em;
+      cursor: move;
+    }
+    .is-dragged {
+      opacity: 0.4;
+    }
 
-  static properties = {
-    videos: { type: Array, state: true },
-    selectedVideoIndex: { type: Number, state: true },
-  }
+    /* leaves a margin on top when is over another video */
+    .drag-over:not(.is-dragged):not(.is-dragged + .drag-over) {
+      margin-top: 100px;
+    }
+    .video-wrapper {
+      flex-grow: 1;
+    }
+
+    .trash {
+    }
+  `
 
   constructor() {
     super()
+    this.draggingIndex = -1
+    this.draggingOverIndex = -1
     const unsubscribeActive = getUnsubscribeValue({
       storeName: STORE_NAMES.ACTIVE,
-      callback: (active) => (this.selectedVideoIndex = active),
+      callback: (active) => (this.activeVideo = active),
     })
 
     const unsubscribeVideosInfo = getUnsubscribeVideosTotalDuration(
@@ -44,23 +76,81 @@ export class BList extends LitElement {
   setValues = ({ videos }) => {
     this.videos = videos
   }
+  resetDraggingIndexes() {
+    this.draggingIndex = -1
+    this.draggingOverIndex = -1
+  }
+  handleMouseDownDrag = (index) => () => {
+    this.draggingIndex = index
+  }
+  handleDragEnds = () => {
+    const oldIndex = this.draggingIndex
+    const newIndex = this.draggingOverIndex
+    this.resetDraggingIndexes()
+    if (oldIndex === newIndex) return
+    moveVideo(oldIndex, newIndex)
+  }
+  handleDragOver = (index, isDragged) => () => {
+    if (!isDragged) return (this.draggingOverIndex = index)
+  }
+
+  handleDropTrash = (e) => {
+    // don't delete playing video
+    if (this.activeVideo === this.draggingIndex) return
+    const indexToRemove = this.draggingIndex
+    removeVideo(indexToRemove)
+    this.resetDraggingIndexes()
+  }
 
   render() {
-    const { videos, selectedVideoIndex } = this
+    const {
+      videos,
+      activeVideo,
+      draggingIndex,
+      handleDragEnds,
+      handleMouseDownDrag,
+      draggingOverIndex,
+      handleDragOver,
+      handleDragLeave,
+    } = this
     if (!videos?.length) return
 
     return html`
-      ${videos.map(
-        (video, index) => html`
-          <div class="video">
-            <bl-video
-              video=${JSON.stringify(video)}
-              ?active="${index === selectedVideoIndex}"
-              index="${index}"
-            ></bl-video>
+      <div
+        class="trash"
+        @drop=${this.handleDropTrash}
+        @dragover=${(e) => e.preventDefault()}
+      >
+        trash
+      </div>
+      ${videos.map((video, index) => {
+        const isDraggedVideo = index === draggingIndex
+        const videoClass = classMap({
+          video: true,
+          "is-dragged": isDraggedVideo,
+          "drag-over": index === draggingOverIndex,
+        })
+        return html`
+          <div
+            class=${videoClass}
+            draggable=${isDraggedVideo}
+            @dragend=${handleDragEnds}
+            @dragenter=${handleDragOver(index)}
+            @dragleave=${handleDragLeave}
+          >
+            <div class="handle" @mousedown=${handleMouseDownDrag(index)}>
+              ···
+            </div>
+            <div class="video-wrapper">
+              <bl-video
+                video=${JSON.stringify(video)}
+                ?active="${index === activeVideo}"
+                index="${index}"
+              ></bl-video>
+            </div>
           </div>
         `
-      )}
+      })}
     `
   }
 }
