@@ -9,6 +9,7 @@ import {
   fetchNewVideos,
 } from "../store/store.js"
 import { removeVideo, moveVideo } from "../store/edit-videos-order.js"
+import "./async-icon.js"
 
 export class BList extends LitElement {
   static properties = {
@@ -46,6 +47,17 @@ export class BList extends LitElement {
     }
 
     .trash {
+      font-size: 1.5em;
+      background-color: var(--color-dark-gray);
+      display: inline-block;
+      transition: all 0.2s;
+
+      border-radius: 100%;
+      padding: 0.6em;
+      text-align: center;
+    }
+    .trash.isDragging {
+      background-color: var(--color-primary);
     }
   `
 
@@ -115,13 +127,15 @@ export class BList extends LitElement {
     } = this
     if (!videos?.length) return
 
+    const isDragging = draggingIndex !== -1
+
     return html`
       <div
-        class="trash"
+        class=${classMap({ trash: true, isDragging })}
         @drop=${this.handleDropTrash}
         @dragover=${(e) => e.preventDefault()}
       >
-        trash
+        <async-icon name="trash-can"></async-icon>
       </div>
       ${videos.map((video, index) => {
         const isDraggedVideo = index === draggingIndex

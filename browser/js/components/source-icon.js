@@ -1,10 +1,6 @@
 import { html, css, LitElement } from "lit"
-
-const LINK = {
-  yt: "https://www.youtube.com/watch?v=",
-  dm: "https://www.dailymotion.com/video/",
-  vi: "https://vimeo.com/",
-}
+import { SOURCES_BY_ID } from "../constants.js"
+import "./async-icon.js"
 
 export class SourceIcon extends LitElement {
   static properties = {
@@ -23,8 +19,6 @@ export class SourceIcon extends LitElement {
       align-items: center;
       justify-content: center;
       text-decoration: none;
-      
-      
     }
     .yt {
       background-color: var(--color-youtube);
@@ -38,11 +32,12 @@ export class SourceIcon extends LitElement {
   `
   render() {
     const { source, id } = this
-    const link = id ? `${LINK[source]}${id}` : ""
+    const link = id ? `${SOURCES_BY_ID?.[source].VIDEO_URL}${id}` : ""
+    const iconName = SOURCES_BY_ID?.[source].SITE || "youtube"
     return link
       ? html`
           <a href="${link}" target="_blank" class="main ${source}">
-            ${source}
+            <async-icon name=${iconName}></async-icon>
           </a>
         `
       : html`<span class="main ${source}">${source}</span>`
