@@ -1,7 +1,7 @@
 import { css, LitElement } from "lit"
 import { unsafeSVG } from "lit/directives/unsafe-svg.js"
 
-const PATH_TO_SVGS = "/images/icons/"
+const PATH_TO_SVGS = "images/icons/"
 
 export class AsyncIcon extends LitElement {
   static styles = css`
