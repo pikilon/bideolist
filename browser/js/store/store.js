@@ -94,11 +94,11 @@ export const setUrlParameters = (storeUrlName) => (value) => {
   reflectInUrl({ [storeUrlName]: value })
 }
 
-export const setActive = (newIndex) => {
+export const setActive = (newIndex, resetCurrentElapsedTime = false) => {
   const isSameIndex = areEqual(storeSelector(STORE_NAMES.ACTIVE), newIndex)
   if (isSameIndex) return
   setUrlParameters(STORE_NAMES.ACTIVE)(newIndex)
-  setCurrentVideoElapsedSeconds(0)
+  if (!resetCurrentElapsedTime) setCurrentVideoElapsedSeconds(0)
 }
 
 export const fetchNewVideos = async (composedIds) => {

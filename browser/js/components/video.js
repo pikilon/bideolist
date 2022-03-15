@@ -70,7 +70,7 @@ export class Video extends LitElement {
     index: { type: Number },
   }
 
-  setActive = () => setActive(this.index)
+  setActive = () => setActive(this.index, true)
 
   get _formattedDuration() {
     return secondsToDuration(this.video.durationSeconds)

@@ -8,7 +8,7 @@ import {
   STORE_NAMES,
   fetchNewVideos,
 } from "../store/store.js"
-import { removeVideo, moveVideo } from "../store/edit-videos-order.js"
+import { removeVideo, moveVideo, addVideo } from "../store/edit-videos-order.js"
 import "./async-icon.js"
 
 export class BList extends LitElement {
@@ -114,6 +114,14 @@ export class BList extends LitElement {
     this.resetDraggingIndexes()
   }
 
+  listDrop = (e) => {
+    const composedId = e.dataTransfer.getData("text/plain")
+    if (!composedId) return
+    const index = this.draggingOverIndex
+    addVideo(composedId, index)
+    this.resetDraggingIndexes()
+  }
+
   render() {
     const {
       videos,
@@ -137,34 +145,40 @@ export class BList extends LitElement {
       >
         <async-icon name="trash-can"></async-icon>
       </div>
-      ${videos.map((video, index) => {
-        const isDraggedVideo = index === draggingIndex
-        const videoClass = classMap({
-          video: true,
-          "is-dragged": isDraggedVideo,
-          "drag-over": index === draggingOverIndex,
-        })
-        return html`
-          <div
-            class=${videoClass}
-            draggable=${isDraggedVideo}
-            @dragend=${handleDragEnds}
-            @dragenter=${handleDragOver(index)}
-            @dragleave=${handleDragLeave}
-          >
-            <div class="handle" @mousedown=${handleMouseDownDrag(index)}>
-              ···
+      <div
+        class="list"
+        @drop=${this.listDrop}
+        @dragover=${(e) => e.preventDefault()}
+      >
+        ${videos.map((video, index) => {
+          const isDraggedVideo = index === draggingIndex
+          const videoClass = classMap({
+            video: true,
+            "is-dragged": isDraggedVideo,
+            "drag-over": index === draggingOverIndex,
+          })
+          return html`
+            <div
+              class=${videoClass}
+              draggable=${isDraggedVideo}
+              @dragend=${handleDragEnds}
+              @dragenter=${handleDragOver(index)}
+              @dragleave=${handleDragLeave}
+            >
+              <div class="handle" @mousedown=${handleMouseDownDrag(index)}>
+                ···
+              </div>
+              <div class="video-wrapper">
+                <bl-video
+                  video=${JSON.stringify(video)}
+                  ?active="${index === activeVideo}"
+                  index="${index}"
+                ></bl-video>
+              </div>
             </div>
-            <div class="video-wrapper">
-              <bl-video
-                video=${JSON.stringify(video)}
-                ?active="${index === activeVideo}"
-                index="${index}"
-              ></bl-video>
-            </div>
-          </div>
-        `
-      })}
+          `
+        })}
+      </div>
     `
   }
 }

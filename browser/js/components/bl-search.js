@@ -52,6 +52,9 @@ export class Search extends LitElement {
   handleResultClick = (video) => () => {
     addVideo(video.composedId)
   }
+  handleDragStart = (composedId) => (e) => {
+    e.dataTransfer.setData("text/plain", composedId)
+  }
 
   render() {
     return html`
@@ -61,6 +64,7 @@ export class Search extends LitElement {
           type="text"
           class="query"
           minlength="4"
+          name="search-videos"
           placeholder="Search videos"
           @change=${(e) => (this.query = e.target.value.trim())}
         />
@@ -70,7 +74,12 @@ export class Search extends LitElement {
               <ul>
                 ${this.videos.map(
                   ({ title, ...video }) => html`
-                    <li @click=${this.handleResultClick(video)}>${title}</li>
+                    <li
+                      draggable="true"
+                      @dragstart=${this.handleDragStart(video.composedId)}
+                    >
+                      ${title}
+                    </li>
                   `
                 )}
               </ul>

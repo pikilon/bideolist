@@ -12,7 +12,7 @@ import {
 
 const PLAYER_ID = "player"
 
-const DEBOUNCE_TIME = 10;
+const DEBOUNCE_TIME = 10
 
 class Player extends LitElement {
   static properties = {
@@ -54,7 +54,7 @@ class Player extends LitElement {
     const nextIndex = storeSelector(STORE_NAMES.ACTIVE) + 1
     const videos = storeSelector(STORE_NAMES.VIDEOS)
 
-    if (nextIndex < videos.length) setActive(nextIndex)
+    if (nextIndex < videos.length) setActive(nextIndex, true)
   }
   onProgress = ({ playedSeconds }) =>
     setCurrentVideoElapsedSeconds(Math.round(playedSeconds))
