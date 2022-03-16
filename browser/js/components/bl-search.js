@@ -1,6 +1,7 @@
 import { html, css, LitElement } from "lit"
 import { search } from "../api/search.js"
 import { addVideo } from "../store/edit-videos-order.js"
+import "./loading-spinner.js"
 
 const MILLISECONDS_TO_SUBMIT = 5 * 1000
 export class Search extends LitElement {
@@ -9,6 +10,7 @@ export class Search extends LitElement {
     query: { type: String, state: true },
     videos: { type: Array, state: true },
     waiting: { type: Boolean, state: true },
+    loading: { type: Boolean, state: true },
   }
   static styles = css``
 
@@ -21,6 +23,7 @@ export class Search extends LitElement {
     this.query = ""
     this.videos = []
     this.waiting = false
+    this.loading = false
     this.unlockEditingTimeout = null
   }
   clearTimeout() {
@@ -37,8 +40,9 @@ export class Search extends LitElement {
     this.clearTimeout()
     this.lastQuery = this.query
     this.waiting = true
-    console.log("this.query", this.query)
+    this.loading = true
     this.videos = await search(this.query)
+    this.loading = false
     this.unlockEditingTimeout = setTimeout(() => {
       this.waiting = false
     }, MILLISECONDS_TO_SUBMIT)
@@ -69,6 +73,9 @@ export class Search extends LitElement {
           @change=${(e) => (this.query = e.target.value.trim())}
         />
         <button type="submit" @click=${this.handleSearchClick}>search</button>
+        ${this.loading
+          ? html`<div><loading-spinner></loading-spinner></div>`
+          : ""}
         ${this.videos.length > 0
           ? html`
               <ul>
