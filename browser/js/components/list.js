@@ -16,6 +16,7 @@ export class BList extends LitElement {
     videos: { type: Array, state: true },
     activeVideo: { type: Number, state: true },
     draggingIndex: { type: Number, state: true },
+    draggingElementHeight: { type: Number, state: true },
     draggingOverIndex: { type: Number, state: true },
   }
 
@@ -23,16 +24,18 @@ export class BList extends LitElement {
     .video {
       display: flex;
       align-items: center;
+      position: relative;
     }
     .video + .video {
       margin-top: var(--gap-small);
     }
     .handle {
-      font-size: 2em;
-      width: 0.5em;
-      word-break: break-all;
-      line-height: 0.2em;
-      cursor: move;
+      cursor: grab;
+      font-size: 0.7em;
+      padding: 1em 0.5em;
+    }
+    .video:active .handle {
+      cursor: grabbing;
     }
     .is-dragged {
       opacity: 0.4;
@@ -40,7 +43,17 @@ export class BList extends LitElement {
 
     /* leaves a margin on top when is over another video */
     .drag-over:not(.is-dragged):not(.is-dragged + .drag-over) {
-      margin-top: 100px;
+      padding-top: calc(var(--dragging-height) + var(--gap-small));
+    }
+    .drag-over:not(.is-dragged):not(.is-dragged + .drag-over):before {
+      height: var(--dragging-height);
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      border: 3px solid var(--color-light-gray);
+      border-radius: 0.5em;
     }
     .video-wrapper {
       flex-grow: 1;
@@ -63,8 +76,7 @@ export class BList extends LitElement {
 
   constructor() {
     super()
-    this.draggingIndex = -1
-    this.draggingOverIndex = -1
+    this.resetDraggingIndexes()
     const unsubscribeActive = getUnsubscribeValue({
       storeName: STORE_NAMES.ACTIVE,
       callback: (active) => (this.activeVideo = active),
@@ -91,19 +103,24 @@ export class BList extends LitElement {
   resetDraggingIndexes() {
     this.draggingIndex = -1
     this.draggingOverIndex = -1
+    this.draggingElementHeight = 90
   }
-  handleMouseDownDrag = (index) => () => {
+  handleMouseDownDrag = (index) => (e) => {
     this.draggingIndex = index
+    const videoElement = e.target.closest(".video")
+    const videoElementHeight = videoElement.clientHeight
+    this.draggingElementHeight = videoElementHeight
   }
   handleDragEnds = () => {
     const oldIndex = this.draggingIndex
     const newIndex = this.draggingOverIndex
     this.resetDraggingIndexes()
     if (oldIndex === newIndex) return
+
     moveVideo(oldIndex, newIndex)
   }
-  handleDragOver = (index, isDragged) => () => {
-    if (!isDragged) return (this.draggingOverIndex = index)
+  handleDragOver = (index) => () => {
+    this.draggingOverIndex = index
   }
 
   handleDropTrash = (e) => {
@@ -115,6 +132,7 @@ export class BList extends LitElement {
   }
 
   listDrop = (e) => {
+    e.preventDefault()
     const composedId = e.dataTransfer.getData("text/plain")
     if (!composedId) return
     const index = this.draggingOverIndex
@@ -132,8 +150,10 @@ export class BList extends LitElement {
       draggingOverIndex,
       handleDragOver,
       handleDragLeave,
+      draggingElementHeight,
     } = this
     if (!videos?.length) return
+    const draggingHeightStyle = `--dragging-height: ${draggingElementHeight}px`
 
     const isDragging = draggingIndex !== -1
 
@@ -147,6 +167,7 @@ export class BList extends LitElement {
       </div>
       <div
         class="list"
+        style=${draggingHeightStyle}
         @drop=${this.listDrop}
         @dragover=${(e) => e.preventDefault()}
       >
@@ -161,12 +182,15 @@ export class BList extends LitElement {
             <div
               class=${videoClass}
               draggable=${isDraggedVideo}
+              @dragstart=${(e) => {
+                e.target.style.cursor = "grabbing"
+              }}
               @dragend=${handleDragEnds}
               @dragenter=${handleDragOver(index)}
               @dragleave=${handleDragLeave}
             >
               <div class="handle" @mousedown=${handleMouseDownDrag(index)}>
-                ···
+                <async-icon name="grip-vertical"></async-icon>
               </div>
               <div class="video-wrapper">
                 <bl-video

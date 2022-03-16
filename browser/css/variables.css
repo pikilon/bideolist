@@ -7,6 +7,7 @@
   /* colors */
   --color-light: #fafafa;
   --color-dark: #222;
+  --color-light-gray: #aaa;
   --color-dark-gray: #444;
   --color-primary: #e0006f;
   --color-font-main: var(--color-light);
