@@ -7,6 +7,7 @@ import {
   getUnsubscribeValue,
   STORE_NAMES,
   fetchNewVideos,
+  setActive,
 } from "../store/store.js"
 import { removeVideo, moveVideo, addVideo } from "../store/edit-videos-order.js"
 import "./async-icon.js"
@@ -140,6 +141,8 @@ export class BList extends LitElement {
     this.resetDraggingIndexes()
   }
 
+  setActive = (index) => () => setActive(index, true)
+
   render() {
     const {
       videos,
@@ -149,7 +152,7 @@ export class BList extends LitElement {
       handleMouseDownDrag,
       draggingOverIndex,
       handleDragOver,
-      handleDragLeave,
+      setActive,
       draggingElementHeight,
     } = this
     if (!videos?.length) return
@@ -187,7 +190,6 @@ export class BList extends LitElement {
               }}
               @dragend=${handleDragEnds}
               @dragenter=${handleDragOver(index)}
-              @dragleave=${handleDragLeave}
             >
               <div class="handle" @mousedown=${handleMouseDownDrag(index)}>
                 <async-icon name="grip-vertical"></async-icon>
@@ -196,7 +198,7 @@ export class BList extends LitElement {
                 <bl-video
                   video=${JSON.stringify(video)}
                   ?active="${index === activeVideo}"
-                  index="${index}"
+                  .handleClick=${setActive(index)}
                 ></bl-video>
               </div>
             </div>

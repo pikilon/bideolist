@@ -8,10 +8,12 @@ import {
 export const addVideo = (composedId, index = 0) => {
   const newVideos = [...storeSelector(STORE_NAMES.VIDEOS)]
   const currentActive = storeSelector(STORE_NAMES.ACTIVE)
+  // negative adds to the end
+  const finalIndex = index < 0 ? newVideos.length : index
 
-  newVideos.splice(index, 0, composedId)
+  newVideos.splice(finalIndex, 0, composedId)
   setUrlParameters(STORE_NAMES.VIDEOS)(newVideos)
-  if (index > currentActive) return
+  if (finalIndex > currentActive) return
 
   setActive(currentActive + 1)
 }

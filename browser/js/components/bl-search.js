@@ -2,6 +2,7 @@ import { html, css, LitElement } from "lit"
 import { search } from "../api/search.js"
 import { addVideo } from "../store/edit-videos-order.js"
 import "./loading-spinner.js"
+import "./video.js"
 
 const MILLISECONDS_TO_SUBMIT = 5 * 1000
 export class Search extends LitElement {
@@ -12,7 +13,11 @@ export class Search extends LitElement {
     waiting: { type: Boolean, state: true },
     loading: { type: Boolean, state: true },
   }
-  static styles = css``
+  static styles = css`
+    .list {
+      position: fixed;
+    }
+  `
 
   disconnectedCallback() {
     this.clearTimeout()
@@ -59,6 +64,7 @@ export class Search extends LitElement {
   handleDragStart = (composedId) => (e) => {
     e.dataTransfer.setData("text/plain", composedId)
   }
+  addVideoEnd = (composedId) => () => addVideo(composedId, -1)
 
   render() {
     return html`
@@ -78,18 +84,16 @@ export class Search extends LitElement {
           : ""}
         ${this.videos.length > 0
           ? html`
-              <ul>
+              <section class="results">
                 ${this.videos.map(
-                  ({ title, ...video }) => html`
-                    <li
-                      draggable="true"
-                      @dragstart=${this.handleDragStart(video.composedId)}
-                    >
-                      ${title}
-                    </li>
+                  (video, index) => html`
+                    <bl-video
+                      video=${JSON.stringify(video)}
+                      .handleClick=${this.addVideoEnd(video.composedId)}
+                    ></bl-video>
                   `
                 )}
-              </ul>
+              </section>
             `
           : ""}
       </form>

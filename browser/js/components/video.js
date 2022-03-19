@@ -1,7 +1,6 @@
 import { html, css, LitElement } from "lit"
 import { classMap } from "lit/directives/class-map.js"
 import { secondsToDuration } from "../utils/secondsToDuration.js"
-import { setActive } from "../store/store.js"
 import "./source-icon.js"
 import { resetAll } from "../../css/utility-classes.css.js"
 
@@ -67,10 +66,8 @@ export class Video extends LitElement {
   static properties = {
     video: { type: Object },
     active: { type: Boolean },
-    index: { type: Number },
+    handleClick: { type: Function },
   }
-
-  setActive = () => setActive(this.index, true)
 
   get _formattedDuration() {
     return secondsToDuration(this.video.durationSeconds)
@@ -78,21 +75,22 @@ export class Video extends LitElement {
 
   render() {
     if (!this.video) return
-    const { video, active } = this
+    const { video, active, handleClick } = this
+    console.log("handleClick", handleClick)
     const { id, source, title, thumbUrl } = video
     return html`
       <article class=${classMap({ active })}>
         <div class="thumb">
-          <img src="${thumbUrl}" alt="${title}" @click=${this.setActive} />
+          <img src="${thumbUrl}" alt="${title}" @click=${handleClick} />
           <div class="hoverThumb">
             <bl-source-icon source=${source} id="${id}"></bl-source-icon>
-            <span class="duration" @click=${setActive}
+            <span class="duration" @click=${handleClick}
               >${this._formattedDuration}</span
             >
           </div>
         </div>
 
-        <h1 @click=${this.setActive}>${title}</h1>
+        <h1 @click=${handleClick}>${title}</h1>
       </article>
     `
   }
