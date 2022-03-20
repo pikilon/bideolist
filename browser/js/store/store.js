@@ -94,6 +94,10 @@ export const setUrlParameters = (storeUrlName) => (value) => {
   reflectInUrl({ [storeUrlName]: value })
 }
 
+export const setListTitle = (title) => {
+  setUrlParameters(STORE_NAMES.TITLE)(title)
+}
+
 export const setActive = (newIndex, resetCurrentElapsedTime = false) => {
   const isSameIndex = areEqual(storeSelector(STORE_NAMES.ACTIVE), newIndex)
   if (isSameIndex) return

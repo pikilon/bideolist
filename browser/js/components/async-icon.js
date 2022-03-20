@@ -22,7 +22,7 @@ export class AsyncIcon extends LitElement {
       .then((res) => res.text())
       .then((svgString) => (this.svgString = svgString))
   }
-  firstUpdated() {
+  updated() {
     this.fetchSvgString()
   }
 

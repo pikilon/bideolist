@@ -156,7 +156,7 @@ export class BList extends LitElement {
       handleDragOver,
       setActive,
       draggingElementHeight,
-      dragEnd,
+      dragEnd
     } = this
     if (!videos?.length) return
     const draggingHeightStyle = `--dragging-height: ${draggingElementHeight}px`
