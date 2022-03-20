@@ -76,7 +76,6 @@ export class Video extends LitElement {
   render() {
     if (!this.video) return
     const { video, active, handleClick } = this
-    console.log("handleClick", handleClick)
     const { id, source, title, thumbUrl } = video
     return html`
       <article class=${classMap({ active })}>

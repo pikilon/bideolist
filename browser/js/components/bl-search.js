@@ -3,6 +3,7 @@ import { search } from "../api/search.js"
 import { addVideo } from "../store/edit-videos-order.js"
 import "./loading-spinner.js"
 import "./video.js"
+import "./async-icon.js"
 
 const MILLISECONDS_TO_SUBMIT = 5 * 1000
 export class Search extends LitElement {
@@ -14,8 +15,17 @@ export class Search extends LitElement {
     loading: { type: Boolean, state: true },
   }
   static styles = css`
-    .list {
-      position: fixed;
+    .drag-wrapper {
+      display: flex;
+      align-items: center;
+    }
+    [draggable="true"] {
+      opacity: 0.4;
+    }
+    .grab-handler {
+      cursor: grab;
+      font-size: 0.7em;
+      padding: 1em 0.5em;
     }
   `
 
@@ -61,10 +71,18 @@ export class Search extends LitElement {
   handleResultClick = (video) => () => {
     addVideo(video.composedId)
   }
-  handleDragStart = (composedId) => (e) => {
-    e.dataTransfer.setData("text/plain", composedId)
+  handleMouseDown = (e) => {
+    const dragWrapper = e.target.closest(".drag-wrapper")
+    dragWrapper.setAttribute("draggable", true)
+  }
+  dragEnds = (e) => {
+    e.target.setAttribute("draggable", false)
   }
   addVideoEnd = (composedId) => () => addVideo(composedId, -1)
+
+  dragStart = (composedId) => (e) => {
+    e.dataTransfer.setData("text/plain", composedId)
+  }
 
   render() {
     return html`
@@ -86,11 +104,22 @@ export class Search extends LitElement {
           ? html`
               <section class="results">
                 ${this.videos.map(
-                  (video, index) => html`
-                    <bl-video
-                      video=${JSON.stringify(video)}
-                      .handleClick=${this.addVideoEnd(video.composedId)}
-                    ></bl-video>
+                  (video) => html`
+                    <div
+                      class="drag-wrapper"
+                      @dragstart=${this.dragStart(video.composedId)}
+                      @dragend=${this.dragEnds}
+                    >
+                      <async-icon
+                        class="grab-handler"
+                        name="grip-vertical"
+                        @mousedown=${this.handleMouseDown}
+                      ></async-icon>
+                      <bl-video
+                        video=${JSON.stringify(video)}
+                        .handleClick=${this.addVideoEnd(video.composedId)}
+                      ></bl-video>
+                    </div>
                   `
                 )}
               </section>

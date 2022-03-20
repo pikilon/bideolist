@@ -38,15 +38,16 @@ export class BList extends LitElement {
     .video:active .handle {
       cursor: grabbing;
     }
-    .is-dragged {
+    [draggable="true"] {
       opacity: 0.4;
     }
 
     /* leaves a margin on top when is over another video */
-    .drag-over:not(.is-dragged):not(.is-dragged + .drag-over) {
+    .drag-over:not([draggable="true"]):not([draggable="true"] + .drag-over) {
       padding-top: calc(var(--dragging-height) + var(--gap-small));
     }
-    .drag-over:not(.is-dragged):not(.is-dragged + .drag-over):before {
+    .drag-over:not([draggable="true"]):not([draggable="true"]
+        + .drag-over):before {
       height: var(--dragging-height);
       content: "";
       position: absolute;
@@ -109,6 +110,7 @@ export class BList extends LitElement {
   handleMouseDownDrag = (index) => (e) => {
     this.draggingIndex = index
     const videoElement = e.target.closest(".video")
+    videoElement.setAttribute("draggable", "true")
     const videoElementHeight = videoElement.clientHeight
     this.draggingElementHeight = videoElementHeight
   }
@@ -135,25 +137,26 @@ export class BList extends LitElement {
   listDrop = (e) => {
     e.preventDefault()
     const composedId = e.dataTransfer.getData("text/plain")
-    if (!composedId) return
+    if (!composedId) return this.handleDragEnds()
     const index = this.draggingOverIndex
     addVideo(composedId, index)
     this.resetDraggingIndexes()
   }
 
   setActive = (index) => () => setActive(index, true)
+  dragEnd = (e) => e.target.setAttribute("draggable", "false")
 
   render() {
     const {
       videos,
       activeVideo,
       draggingIndex,
-      handleDragEnds,
       handleMouseDownDrag,
       draggingOverIndex,
       handleDragOver,
       setActive,
       draggingElementHeight,
+      dragEnd,
     } = this
     if (!videos?.length) return
     const draggingHeightStyle = `--dragging-height: ${draggingElementHeight}px`
@@ -178,18 +181,13 @@ export class BList extends LitElement {
           const isDraggedVideo = index === draggingIndex
           const videoClass = classMap({
             video: true,
-            "is-dragged": isDraggedVideo,
             "drag-over": index === draggingOverIndex,
           })
           return html`
             <div
               class=${videoClass}
-              draggable=${isDraggedVideo}
-              @dragstart=${(e) => {
-                e.target.style.cursor = "grabbing"
-              }}
-              @dragend=${handleDragEnds}
               @dragenter=${handleDragOver(index)}
+              @dragend=${dragEnd}
             >
               <div class="handle" @mousedown=${handleMouseDownDrag(index)}>
                 <async-icon name="grip-vertical"></async-icon>
