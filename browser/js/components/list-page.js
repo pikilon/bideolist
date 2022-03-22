@@ -1,14 +1,14 @@
 import { html, css, LitElement } from "lit"
 import { classMap } from "lit/directives/class-map.js"
-import "./components/list.js"
-import "./components/list-title.js"
-import "./components/player.js"
-import "./components/progress-bar.js"
-import "./components/bl-search.js"
-import { container } from "../css/utility-classes.css.js"
+import "./list.js"
+import "./list-title.js"
+import "./player.js"
+import "./progress-bar.js"
+import "./bl-search.js"
+import { container } from "../../css/utility-classes.css.js"
 
 
-export class MainWrapper extends LitElement {
+export class ListPage extends LitElement {
   static properties = {
     searchOpen: { type: Boolean, state: true },
   }
@@ -52,4 +52,4 @@ export class MainWrapper extends LitElement {
   }
 }
 
-customElements.define("bl-main", MainWrapper)
+customElements.define("list-page", ListPage)

@@ -2,10 +2,12 @@ import { emit, subscribe } from "./bus.js"
 import { getListInfoFromUrl, reflectInUrl, URL_PARAMS_STORE } from "./url.js"
 import { areEqual } from "../utils/areEqual.js"
 import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
+import { DEMO_LIST } from "../constants.js"
 
 export const STORE_NAMES = {
   VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
   CURRENT_VIDEO_ELAPSED_SECONDS: "CURRENT_VIDEO_ELAPSED_SECONDS",
+  LISTS: "LISTS",
   ...URL_PARAMS_STORE,
 }
 
@@ -28,6 +30,7 @@ const storeHistory = {
   [STORE_NAMES.VIDEOS]: [videos],
   [STORE_NAMES.TITLE]: [title],
   [STORE_NAMES.ACTIVE]: [active],
+  [STORE_NAMES.LISTS]: [{ [DEMO_LIST.title]: DEMO_LIST }],
 }
 
 const persistStorage = (storeName, value) => {
@@ -62,6 +65,14 @@ const storeSetter =  // returns if emitted
     emit(storeName, value)
     return true
   }
+
+export const upsertList = (listTitle, listVideos) => {
+  const newValue = {
+    ...storeSelector(STORE_NAMES.LIST),
+    [listTitle]: listVideos,
+  }
+  storeSetter(STORE_NAMES.LIST, true)(newValue)
+}
 
 export const setVideosDictionary = (videosMap) => {
   const newValue = {

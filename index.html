@@ -9,10 +9,10 @@
       href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Roboto:wght@400;900&family=Special+Elite&display=swap"
       rel="stylesheet"
     />
-    
+
     <link rel="stylesheet" href="browser/css/variables.css" />
     <link rel="stylesheet" href="browser/css/normalize.css" />
-    <link rel="stylesheet" href="browser/css/body.css" />   
+    <link rel="stylesheet" href="browser/css/body.css" />
     <script type="importmap">
       {
         "imports": {
@@ -29,13 +29,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bideolist</title>
+    <script src="browser/js/components/home.js" type="module"></script>
   </head>
   <body>
-    <div><img src="browser/images/bideolist_logo.avif" alt="Bideolist logo" /></div>
-    <a
-      href="list/?title=testing-videolist&videos=yt:7lCDEYXw3mM,vi:221538677,yt:RUyTN9hajHY,yt:YEW_UFm4Xe4,dm:x86h9zq,vi:81329596,dm:x14lnch"
-    >
-      Sample list
-    </a>
+    <div>
+      <img src="browser/images/bideolist_logo.avif" alt="Bideolist logo" />
+    </div>
+    <bl-home></bl-home>
   </body>
 </html>
