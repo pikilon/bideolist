@@ -7,14 +7,18 @@ import "./create-list.js"
 
 export class Home extends LitElement {
   static properties = {
-    lists: { type: Array, state: true },
+    listsMap: { type: Object, state: true },
+    newList: { type: Object, state: true },
   }
   static styles = css`
     ${container}
     .lists {
       margin: var(--gap-medium) 0;
     }
-    a + a {
+    .list {
+      display: block;
+    }
+    .list + .list {
       margin-top: var(--gap-medium);
     }
   `
@@ -22,15 +26,34 @@ export class Home extends LitElement {
     super()
     const unsubscribeLists = getUnsubscribeValue({
       storeName: STORE_NAMES.LISTS,
-      callback: (lists) => (this.lists = Object.values(lists)),
+      callback: (listsMap) => (this.listsMap = listsMap),
     })
 
     this.disconnectedCallback = () => {
       unsubscribeLists()
     }
   }
+  get lists() {
+    return Object.values(this.listsMap)
+  }
+  handleNewListChange = (newList) => {
+    this.newList = newList
+  }
+  onNewListClick =
+    (save = false) =>
+    () => {
+      const { title } = this.newList
+      const videos = this.newList.videos.map(({ composedId }) => composedId)
+      const finalList = { title, videos }
+      const url = `list/${generateListUrlQuery(finalList)}`
+      if (save) upsertList(this.newList)
+      window.location.href = url
+    }
+  get isListReady() {
+    return this.newList?.title?.length > 0 && this.newList?.videos?.length > 0
+  }
   render() {
-    const { lists } = this
+    const { lists, isListReady } = this
     return html`
       <div class="container">
         <div class="lists">
@@ -39,6 +62,7 @@ export class Home extends LitElement {
               <a
                 href=${`list/${generateListUrlQuery(list)}`}
                 title=${list.title}
+                class="list"
               >
                 <bl-label><h1>${list.title}</h1></bl-label>
               </a>
@@ -46,7 +70,17 @@ export class Home extends LitElement {
           )}
         </div>
         <div class="new-list">
-          <create-list></create-list>
+          <h1>Create a new list</h1>
+          <create-list .change=${this.handleNewListChange}></create-list>
+          <button ?disabled=${!isListReady} @click=${this.onNewListClick(true)}>
+            Save and go
+          </button>
+          <button
+            ?disabled=${!isListReady}
+            @click=${this.onNewListClick(false)}
+          >
+            go
+          </button>
         </div>
       </div>
     `

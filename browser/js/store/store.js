@@ -14,6 +14,14 @@ export const STORE_NAMES = {
 const localStorageVideosDictionary = localStorage.getItem(
   STORE_NAMES.VIDEOS_DICTIONARY
 )
+
+const localListStorage = localStorage.getItem(STORE_NAMES.LISTS) || "{}"
+
+const initialLists = {
+  ...JSON.parse(localListStorage),
+  [DEMO_LIST.title]: DEMO_LIST,
+}
+
 const videosDictionaryFirstValue = localStorageVideosDictionary
   ? JSON.parse(localStorageVideosDictionary)
   : {}
@@ -30,7 +38,7 @@ const storeHistory = {
   [STORE_NAMES.VIDEOS]: [videos],
   [STORE_NAMES.TITLE]: [title],
   [STORE_NAMES.ACTIVE]: [active],
-  [STORE_NAMES.LISTS]: [{ [DEMO_LIST.title]: DEMO_LIST }],
+  [STORE_NAMES.LISTS]: [initialLists],
 }
 
 const persistStorage = (storeName, value) => {
@@ -66,12 +74,12 @@ const storeSetter =  // returns if emitted
     return true
   }
 
-export const upsertList = (listTitle, listVideos) => {
+export const upsertList = (list) => {
   const newValue = {
-    ...storeSelector(STORE_NAMES.LIST),
-    [listTitle]: listVideos,
+    ...storeSelector(STORE_NAMES.LISTS),
+    [list.title]: list,
   }
-  storeSetter(STORE_NAMES.LIST, true)(newValue)
+  storeSetter(STORE_NAMES.LISTS, true)(newValue)
 }
 
 export const setVideosDictionary = (videosMap) => {

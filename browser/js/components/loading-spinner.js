@@ -3,16 +3,17 @@ import "./async-icon.js"
 
 export class LoadingSpinner extends LitElement {
   static styles = css`
-    @keyframes spin{
-      to { transform: rotate(360deg); }
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
-    div {
+    async-icon {
       display: inline-block;
-      font-size: 3em;
       animation: spin 1s linear infinite;
     }
   `
-  render = () => html` <div><async-icon name="spinner"></async-icon></div>`
+  render = () => html` <async-icon name="spinner"></async-icon>`
 }
 
 customElements.define("loading-spinner", LoadingSpinner)
