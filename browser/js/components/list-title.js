@@ -45,7 +45,7 @@ export class SourceIcon extends LitElement {
     )
     const unsubscribeTitle = getUnsubscribeValue({
       storeName: STORE_NAMES.TITLE,
-      callback: (title) => (this.title = title),
+      callback: this.setTitle,
     })
 
     this.unsubscribeAll = () => {
@@ -58,6 +58,10 @@ export class SourceIcon extends LitElement {
     this.unsubscribeAll()
   }
 
+  setTitle = (newTitle) => {
+    this.title = newTitle
+    document.title = `${newTitle} - Bideolist`
+  }
   setFocusEditable = () => {
     const titleElement = this.shadowRoot.querySelector("h1")
     titleElement.focus()
