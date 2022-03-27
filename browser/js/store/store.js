@@ -117,11 +117,18 @@ export const setListTitle = (title) => {
   setUrlParameters(STORE_NAMES.TITLE)(title)
 }
 
+
 export const setActive = (newIndex, resetCurrentElapsedTime = false) => {
   const isSameIndex = areEqual(storeSelector(STORE_NAMES.ACTIVE), newIndex)
   if (isSameIndex) return
   setUrlParameters(STORE_NAMES.ACTIVE)(newIndex)
   if (!resetCurrentElapsedTime) setCurrentVideoElapsedSeconds(0)
+}
+
+export const setNextPrevActive = (prev = false) => {
+  const currentActive = storeSelector(STORE_NAMES.ACTIVE)
+  const newActive = prev ? currentActive - 1 : currentActive + 1
+  setActive(newActive, true)
 }
 
 export const fetchNewVideos = async (composedIds) => {

@@ -8,7 +8,9 @@ import {
   STORE_NAMES,
   setActive,
   setCurrentVideoElapsedSeconds,
+  setNextPrevActive,
 } from "../store/store.js"
+import "./player-button.js"
 
 const PLAYER_ID = "player"
 
@@ -19,12 +21,16 @@ class Player extends LitElement {
     video: { type: Object, state: true },
     scriptLoaded: { type: Boolean, state: true },
     isWide: { type: Boolean, state: true },
+    playing: { type: Boolean, state: true },
   }
   static styles = css`
     ${resetAll}
     ${container}
     .player-wrapper {
       aspect-ratio: 16/9;
+    }
+    .controls {
+      display: flex;
     }
   `
   constructor() {
@@ -73,10 +79,11 @@ class Player extends LitElement {
     if (data === YT.PlayerState.ENDED) this.onEnded()
   }
 
-  togglePlayPause = () => {
-    this.playing = !this.playing
-    this.setPlayer({ playing: this.playing })
+  setPlaying = (playing) => () => {
+    this.playing = playing
+    this.setPlayer({ playing })
   }
+  setPrevNextTrack = (prev) => () => setNextPrevActive(prev)
 
   createPlayer = () => {
     loadScript(
@@ -95,19 +102,26 @@ class Player extends LitElement {
   toggleWide = () => (this.isWide = !this.isWide)
 
   render() {
-    const { isWide, toggleWide, togglePlayPause } = this
+    const { isWide, toggleWide, playing, setPlaying, setPrevNextTrack } = this
+    const playPauseIcon = playing ? "pause" : "play"
+    console.log('playPauseIcon', playPauseIcon);
     return html`
       <div
         class=${classMap({
-          "player-wrapper player-youtube": true,
-          container: !isWide,
-        })}
+      "player-wrapper player-youtube": true,
+      container: !isWide,
+    })}
       >
         <div id=${PLAYER_ID}></div>
       </div>
       <div class="container">
         <button @click=${toggleWide}>Toggle wide</button>
-        <button @click=${togglePlayPause}>Toggle Play/Pause</button>
+        <div class="controls">
+          <player-button .click=${setPrevNextTrack(true)} text="Previous" iconName="backward-step" first></player-button>
+          <player-button ?active=${playing} .click=${setPlaying(true)} text="Play" iconName="play"></player-button>
+          <player-button ?active=${!playing} .click=${setPlaying(false)} text="Pause" iconName="pause"></player-button>
+          <player-button .click=${setPrevNextTrack(false)} text="Next" iconName="forward-step" last></player-button>
+        </div>
       </div>
     `
   }
