@@ -20,6 +20,7 @@
           "lit-if-defined": "https://unpkg.com/lit/directives/if-defined.js?module",
           "lit/directives/class-map.js": "https://unpkg.com/lit/directives/class-map.js?module",
           "lit/directives/unsafe-svg.js": "https://unpkg.com/lit/directives/unsafe-svg.js?module",
+          "renderReactPlayer": "https://cdn.jsdelivr.net/gh/pikilon/react-player@dist-file-temporal/dist/ReactPlayer.standalone-module.js",
           "firebase/app": "https://www.gstatic.com/firebasejs/9.6.8/firebase-app.js",
           "firebase/functions": "https://www.gstatic.com/firebasejs/9.6.8/firebase-functions.js"
         }
@@ -30,11 +31,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bideolist</title>
     <script src="../browser/js/components/list-page.js" type="module"></script>
+    <script src="../browser/js/components/player.js" type="module"></script>
   </head>
   <body>
     <a href="/">
       <img src="../browser/images/bideolist_logo.avif" alt="Bideolist logo" />
     </a>
-    <list-page></list-page>
+
+    <list-page><bl-player slot="player"></bl-player></list-page>
   </body>
 </html>

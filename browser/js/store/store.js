@@ -8,6 +8,7 @@ export const STORE_NAMES = {
   VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
   CURRENT_VIDEO_ELAPSED_SECONDS: "CURRENT_VIDEO_ELAPSED_SECONDS",
   LISTS: "LISTS",
+  PLAYING: "PLAYING",
   ...URL_PARAMS_STORE,
 }
 
@@ -39,6 +40,7 @@ const storeHistory = {
   [STORE_NAMES.TITLE]: [title],
   [STORE_NAMES.ACTIVE]: [active],
   [STORE_NAMES.LISTS]: [initialLists],
+  [STORE_NAMES.PLAYING]: [true],
 }
 
 const persistStorage = (storeName, value) => {
@@ -61,18 +63,18 @@ export const setCurrentVideoElapsedSeconds = (seconds) => {
 }
 const storeSetter =  // returns if emitted
   (storeName, persist = false) =>
-  (value) => {
-    const storeSlice = storeHistory[storeName]
-    const currentValue = storeSelector(storeName)
-    const sameValue = areEqual(currentValue, value)
+    (value) => {
+      const storeSlice = storeHistory[storeName]
+      const currentValue = storeSelector(storeName)
+      const sameValue = areEqual(currentValue, value)
 
-    if (sameValue) return false
-    storeSlice.push(value)
-    if (persist) persistStorage(storeName, value)
-    console.log("storeHistory", storeName, storeSlice)
-    emit(storeName, value)
-    return true
-  }
+      if (sameValue) return false
+      storeSlice.push(value)
+      if (persist) persistStorage(storeName, value)
+      console.log("storeHistory", storeName, storeSlice)
+      emit(storeName, value)
+      return true
+    }
 
 export const upsertList = (list) => {
   const newValue = {
@@ -125,7 +127,7 @@ export const setActive = (newIndex, resetCurrentElapsedTime = false) => {
   if (!resetCurrentElapsedTime) setCurrentVideoElapsedSeconds(0)
 }
 
-export const setNextPrevActive = (prev = false) => {
+export const setNextPrevActive = (prev = false) => () => {
   const currentActive = storeSelector(STORE_NAMES.ACTIVE)
   const newActive = prev ? currentActive - 1 : currentActive + 1
   setActive(newActive, true)
@@ -146,3 +148,5 @@ export const fetchNewVideos = async (composedIds) => {
   }
   return videos
 }
+
+export const handleSetPlaying = (playing) => () => storeSetter(STORE_NAMES.PLAYING)(playing)
