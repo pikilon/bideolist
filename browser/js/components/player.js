@@ -63,7 +63,6 @@ class Player extends LitElement {
     width: "100vw",
     height: "56.25vw",
     onReady: (player) => {
-      console.log('READY player', player);
       this.player = player
     },
 
