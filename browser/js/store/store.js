@@ -129,7 +129,10 @@ export const setActive = (newIndex, resetCurrentElapsedTime = false) => {
 
 export const setNextPrevActive = (prev = false) => () => {
   const currentActive = storeSelector(STORE_NAMES.ACTIVE)
-  const newActive = prev ? currentActive - 1 : currentActive + 1
+  let newActive = prev ? currentActive - 1 : currentActive + 1
+  if (newActive < 0) newActive = 0
+  const videosLength = storeSelector(STORE_NAMES.VIDEOS).length
+  if (newActive >= videosLength) newActive = videosLength - 1
   setActive(newActive, true)
 }
 
