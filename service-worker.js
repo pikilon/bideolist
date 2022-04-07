@@ -1,4 +1,6 @@
 import ASSETS from "./generated-assets-list-module.js"
+import { swFetchEvents } from "./service-worker/swFetchEvents.js"
+
 const SERVICE_WORKERS_EVENTS = {
   INSTALL: 'install',
   ACTIVATE: 'activate',
@@ -19,6 +21,4 @@ self.addEventListener(SERVICE_WORKERS_EVENTS.ACTIVATE, async (event) => {
   // console.log('activated', event);
 })
 
-self.addEventListener(SERVICE_WORKERS_EVENTS.FETCH, event => {
-  // console.log('fetched', event);
-})
+self.addEventListener(SERVICE_WORKERS_EVENTS.FETCH, swFetchEvents)
