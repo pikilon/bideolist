@@ -1,6 +1,4 @@
 import { html, css, LitElement } from "lit"
-import { STORE_NAMES, upsertList, getUnsubscribeValue } from "../store/store.js"
-import { generateListUrlQuery } from "../store/url.js"
 import "./label.js"
 import "./search-videos.js"
 import "./video.js"

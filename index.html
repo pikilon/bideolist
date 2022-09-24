@@ -18,9 +18,9 @@
         "imports": {
           "lit": "https://unpkg.com/lit/index.js?module",
           "lit-if-defined": "https://unpkg.com/lit/directives/if-defined.js?module",
-          "renderReactPlayer": "https://cdn.jsdelivr.net/gh/pikilon/react-player@dist-file-temporal/dist/ReactPlayer.standalone-module.js",
           "lit/directives/class-map.js": "https://unpkg.com/lit/directives/class-map.js?module",
-          "lit/directives/unsafe-svg.js": "https://unpkg.com/lit/directives/unsafe-svg.js?module"
+          "lit/directives/unsafe-svg.js": "https://unpkg.com/lit/directives/unsafe-svg.js?module",
+          "renderReactPlayer": "https://unpkg.com/react-player@latest/dist/ReactPlayer.standalone.es6.js"
         }
       }
     </script>
@@ -28,9 +28,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bideolist</title>
-    <script src="browser/js/components/home.js" type="module"></script>
     <script src="./browser/js/app.js" type="module"></script>
-    <link rel="manifest" href="./manifest.json" />
+    <link rel="manifest" href="manifest.json" />
     <!-- iOs support -->
     <link
       rel="apple-touch-icon"
@@ -40,9 +39,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="#3a3a3a" />
     <meta name="theme-color" content="#3a3a3a" />
+
+    <!-- MODULE ENTRY -->
+    <script src="browser/js/components/root.js" type="module"></script>
+
   </head>
   <body>
     <img src="browser/images/bideolist_logo.avif" alt="Bideolist logo" />
-    <bl-home></bl-home>
+    <bl-root><bl-player slot="player"></bl-player></bl-root>
   </body>
 </html>

@@ -60,7 +60,7 @@ export class Home extends LitElement {
           ${lists.map(
             (list) => html`
               <a
-                href=${`list/${generateListUrlQuery(list)}`}
+                href=${`list${generateListUrlQuery(list)}`}
                 title=${list.title}
                 class="list"
               >

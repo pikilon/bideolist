@@ -1,6 +1,5 @@
 import { html, css, LitElement } from "lit"
 import renderReactPlayer from "renderReactPlayer"
-import { loadScript } from "../utils/loadScript.js"
 import { container, resetAll } from "../../css/utility-classes.css.js"
 import { subscribeActiveVideo } from "../store/computed.js"
 import {
@@ -38,7 +37,7 @@ class Player extends LitElement {
           video.id === this.video?.id && video.source === this.video?.source
         if (isSameVideo) return
         this.video = video
-        this.createPlayer()
+        this.setPlayer()
       }, DEBOUNCE_TIME)
     })
     this.unsubscribePlaying = getUnsubscribeValue({
@@ -72,12 +71,6 @@ class Player extends LitElement {
     onProgress: this.onProgress,
   })
 
-  createPlayer = () => {
-    loadScript(
-      // https://github.com/cookpete/react-player#standalone-player
-      "https://unpkg.com/react-player@2.10.0/dist/ReactPlayer.standalone.js"
-    ).then(this.setPlayer)
-  }
 
   setPlayer = (options = {}) => {
     if (!this.video?.url) return

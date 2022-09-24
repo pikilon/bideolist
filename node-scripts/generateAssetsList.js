@@ -7,7 +7,6 @@ const BROWSER_PATH = path.join(ROOT_PATH, "browser")
 const GENERATED_ASSETS_LIST_FILE = path.join(ROOT_PATH, "generated-assets-list-module.js")
 
 const HTML_PATHS = [
-  "https://cdn.jsdelivr.net/gh/pikilon/react-player@dist-file-temporal/dist/ReactPlayer.standalone-module.js",
   "https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Roboto:wght@400;900&family=Special+Elite&display=swap",
   "https://fonts.gstatic.com/s/permanentmarker/v10/Fh4uPib9Iyv2ucM6pGQMWimMp004La2Cfw.woff2",
   "https://fonts.gstatic.com/s/roboto/v29/KFOlCnqEu92Fr1MmYUtfBBc4.woff2",
@@ -25,7 +24,9 @@ const HTML_PATHS = [
   "https://unpkg.com/lit/directives/if-defined.js?module",
   "https://unpkg.com/lit/directives/unsafe-svg.js?module",
   "https://unpkg.com/lit/index.js?module",
-  "https://unpkg.com/react-player@2.10.0/dist/ReactPlayer.standalone.js",
+  "https://unpkg.com/react-player@latest/dist/ReactPlayer.standalone.js",
+  "https://unpkg.com/react-player@latest/dist/ReactPlayer.standalone.es6.js",
+
   // "https://www.youtube.com/s/player/689586e2/www-widgetapi.vflset/www-widgetapi.js",
   // "https://www.youtube.com/iframe_api",
   "https://player.vimeo.com/api/player.js",

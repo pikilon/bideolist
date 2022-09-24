@@ -15,7 +15,7 @@ export const getListInfoFromUrl = () => {
 
 export const generateListUrlQuery = ({ videos, title, active = "" }) => {
   const activeParam = active ? `&${URL_PARAMS_STORE.ACTIVE}=${active}` : ""
-  return `?&${URL_PARAMS_STORE.TITLE}=${title}&${URL_PARAMS_STORE.VIDEOS}=${videos.join(",")}${activeParam}`
+  return `?${URL_PARAMS_STORE.TITLE}=${title}&${URL_PARAMS_STORE.VIDEOS}=${videos.join(",")}${activeParam}`
 }
 
 export const reflectInUrl = (listInfo) => {
