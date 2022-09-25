@@ -2,6 +2,13 @@ export const URL_PARAMS_STORE = {
   TITLE: "title",
   VIDEOS: "videos",
   ACTIVE: "active",
+  ROUTE: "route",
+}
+
+export const ROUTES = {
+  ROOT: "/",
+  ROOT_INDEX: "/index.html",
+  LIST: "/list",
 }
 
 export const getListInfoFromUrl = () => {
@@ -15,15 +22,21 @@ export const getListInfoFromUrl = () => {
 
 export const generateListUrlQuery = ({ videos, title, active = "" }) => {
   const activeParam = active ? `&${URL_PARAMS_STORE.ACTIVE}=${active}` : ""
-  return `?${URL_PARAMS_STORE.TITLE}=${title}&${URL_PARAMS_STORE.VIDEOS}=${videos.join(",")}${activeParam}`
+  return `list?${URL_PARAMS_STORE.TITLE}=${title}&${
+    URL_PARAMS_STORE.VIDEOS
+  }=${videos.join(",")}${activeParam}`
 }
 
 export const reflectInUrl = (listInfo) => {
   const finalListInfo = { ...getListInfoFromUrl(), ...listInfo }
-  const { videos, title, active } = finalListInfo
-  window.history.pushState(
-    listInfo,
-    title,
-    generateListUrlQuery(finalListInfo)
-  )
+  const { title } = finalListInfo
+  const query = generateListUrlQuery(finalListInfo)
+  window.history.pushState(listInfo, title, query)
+}
+
+
+export const getRoute = () => {
+  const withoutGithubSubfolder = window.location.pathname.replace(/bideolist\//, "")
+  const result = withoutGithubSubfolder.replace(/\/$/, "")
+  return result.length > 0 ? result : "/"
 }

@@ -1,6 +1,6 @@
 import { html, css, LitElement } from "lit"
 import { container } from "../../css/utility-classes.css.js"
-import { STORE_NAMES, upsertList, getUnsubscribeValue } from "../store/store.js"
+import { STORE_NAMES, upsertList, getUnsubscribeValue, navigateToList } from "../store/store.js"
 import { generateListUrlQuery } from "../store/url.js"
 import "./label.js"
 import "./create-list.js"
@@ -45,12 +45,17 @@ export class Home extends LitElement {
       const { title } = this.newList
       const videos = this.newList.videos.map(({ composedId }) => composedId)
       const finalList = { title, videos }
-      const url = `list/${generateListUrlQuery(finalList)}`
+      const url = `list${generateListUrlQuery(finalList)}`
       if (save) upsertList(this.newList)
       window.location.href = url
     }
   get isListReady() {
     return this.newList?.title?.length > 0 && this.newList?.videos?.length > 0
+  }
+  listClick = (list) => (event) => {
+    event.preventDefault()
+    const { currentTarget } = event
+    navigateToList(list)
   }
   render() {
     const { lists, isListReady } = this
@@ -60,9 +65,10 @@ export class Home extends LitElement {
           ${lists.map(
             (list) => html`
               <a
-                href=${`list${generateListUrlQuery(list)}`}
+                href=${generateListUrlQuery(list)}
                 title=${list.title}
                 class="list"
+                @click=${this.listClick(list)}
               >
                 <bl-label><h1>${list.title}</h1></bl-label>
               </a>

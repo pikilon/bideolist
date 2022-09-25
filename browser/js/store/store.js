@@ -1,5 +1,5 @@
 import { emit, subscribe } from "./bus.js"
-import { getListInfoFromUrl, reflectInUrl, URL_PARAMS_STORE } from "./url.js"
+import { getListInfoFromUrl, reflectInUrl, URL_PARAMS_STORE, ROUTES, getRoute } from "./url.js"
 import { areEqual } from "../utils/areEqual.js"
 import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
 import { DEMO_LIST } from "../constants.js"
@@ -41,6 +41,7 @@ const storeHistory = {
   [STORE_NAMES.ACTIVE]: [active],
   [STORE_NAMES.LISTS]: [initialLists],
   [STORE_NAMES.PLAYING]: [true],
+  [STORE_NAMES.ROUTE]: [getRoute()],
 }
 
 const persistStorage = (storeName, value) => {
@@ -153,3 +154,13 @@ export const fetchNewVideos = async (composedIds) => {
 }
 
 export const handleSetPlaying = (playing) => () => storeSetter(STORE_NAMES.PLAYING)(playing)
+
+export const navigateToList = (list) => {
+
+  const { title, videos } = list
+  storeSetter(STORE_NAMES.TITLE)(title)
+  storeSetter(STORE_NAMES.VIDEOS)(videos)
+  storeSetter(STORE_NAMES.ACTIVE)(0)
+  reflectInUrl({ [STORE_NAMES.TITLE]: title, [STORE_NAMES.VIDEOS]: videos })
+  storeSetter(STORE_NAMES.ROUTE)(ROUTES.LIST)
+}
