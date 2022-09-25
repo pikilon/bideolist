@@ -5,8 +5,8 @@ import "./player.js"
 
 
 const cleanPathname = () => {
-  const result = window.location.pathname.replace(/\/$/, "")
-  console.log('result', result);
+  const withoutGithubSubfolder = window.location.pathname.replace(/bideolist\//, "")
+  const result = withoutGithubSubfolder.replace(/\/$/, "")
   return result.length > 0 ? result : "/"
 
 }
