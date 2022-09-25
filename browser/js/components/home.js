@@ -54,12 +54,12 @@ export class Home extends LitElement {
   }
   listClick = (list) => (event) => {
     event.preventDefault()
-    const { currentTarget } = event
     navigateToList(list)
   }
   render() {
     const { lists, isListReady } = this
     return html`
+      <img src="browser/images/bideolist_logo.avif" alt="Bideolist logo" />
       <div class="container">
         <div class="lists">
           ${lists.map(

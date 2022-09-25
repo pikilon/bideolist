@@ -27,12 +27,14 @@ export const generateListUrlQuery = ({ videos, title, active = "" }) => {
   }=${videos.join(",")}${activeParam}`
 }
 
-export const reflectInUrl = (listInfo) => {
+export const reflectListInUrl = (listInfo) => {
   const finalListInfo = { ...getListInfoFromUrl(), ...listInfo }
   const { title } = finalListInfo
   const query = generateListUrlQuery(finalListInfo)
   window.history.pushState(listInfo, title, query)
 }
+
+export const reflectRootInUrl = () => window.history.pushState({}, "", "../")
 
 
 export const getRoute = () => {

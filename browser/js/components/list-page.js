@@ -7,6 +7,7 @@ import "./progress-bar.js"
 import "./bl-search.js"
 import { container } from "../../css/utility-classes.css.js"
 import "./player-controls.js"
+import { navigateToRoot } from "../store/store.js"
 
 export class ListPage extends LitElement {
   static properties = {
@@ -38,9 +39,11 @@ export class ListPage extends LitElement {
     this.searchOpen = true
   }
 
+
   render() {
     const { searchOpen } = this
     return html`
+    <a href="../" @click=${navigateToRoot}><img src="browser/images/bideolist_logo.avif" alt="Bideolist logo" /></a>
       <div class="title">
         <bl-list-title></bl-list-title>
       </div>
