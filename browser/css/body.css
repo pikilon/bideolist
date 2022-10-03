@@ -6,7 +6,7 @@ body {
   );
   font-family: var(--font-main);
   color: var(--color-font-main);
-  background: url("/browser/images/background.png"), var(--bg-radial);
+  background: url("../images/background.png"), var(--bg-radial);
 }
 
 a {
