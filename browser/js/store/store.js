@@ -44,8 +44,6 @@ const storeHistory = {
   [STORE_NAMES.ROUTE]: [getRoute()],
 }
 
-console.log('storeHistory', storeHistory);
-
 const persistStorage = (storeName, value) => {
   localStorage.setItem(storeName, JSON.stringify(value))
 }
