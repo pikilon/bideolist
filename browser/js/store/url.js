@@ -41,6 +41,6 @@ export const reflectListInUrl = (listInfo) => {
   window.history.pushState(listInfo, title, query)
 }
 
-export const reflectRootInUrl = () => window.history.pushState({}, "", "/")
+export const reflectRootInUrl = () => window.history.pushState({}, "", window.location.origin + window.location.pathname)
 
 export const getRoute = () => getAllParamsFromUrl().route
