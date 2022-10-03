@@ -26,15 +26,9 @@ const HTML_PATHS = [
   "https://unpkg.com/lit/index.js?module",
   "https://unpkg.com/react-player@latest/dist/ReactPlayer.standalone.js",
   "https://unpkg.com/react-player@latest/dist/ReactPlayer.standalone.es6.js",
-
-  // "https://www.youtube.com/s/player/689586e2/www-widgetapi.vflset/www-widgetapi.js",
-  // "https://www.youtube.com/iframe_api",
   "https://player.vimeo.com/api/player.js",
   "https://api.dmcdn.net/all.js",
   "index.html",
-  "list/index.html",
-  "/",
-  "/list",
 ]
 
 
