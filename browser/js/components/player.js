@@ -59,7 +59,7 @@ class Player extends LitElement {
     url: this.video.url,
     playing: storeSelector(STORE_NAMES.PLAYING),
     controls: true,
-    width: "100vw",
+    width: "100%",
     height: "56.25vw",
     onReady: (player) => {
       this.player = player
