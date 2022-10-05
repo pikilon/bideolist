@@ -11,7 +11,7 @@ const SERVICE_WORKERS_EVENTS = {
 }
 
 
-self.addEventListener(SERVICE_WORKERS_EVENTS.INSTALL, swInstall)
+// self.addEventListener(SERVICE_WORKERS_EVENTS.INSTALL, swInstall)
 
 // it doesn't activate it on new version automatically
 self.addEventListener(SERVICE_WORKERS_EVENTS.ACTIVATE, (event) => {
