@@ -18,6 +18,9 @@ export class AsyncIcon extends LitElement {
 
   fetchSvgString() {
     const url = `${PATH_TO_SVGS}${this.name}.svg`
+    // const url2 = `../../images/icons/${this.name}.svg`
+    // fetch(url).then(response => response.text()).then(console.log)
+    
     fetch(url)
       .then((res) => res.text())
       .then((svgString) => (this.svgString = svgString))
