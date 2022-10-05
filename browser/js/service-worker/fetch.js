@@ -20,6 +20,12 @@ const logNotCachedElements = (url) => {
 export const STATIC_CACHE_NAME = "static-cache-v1"
 export const DEV_CACHE_NAME = "dev-cache-v1"
 
+let called = false
+
 export const swFetch = (event) => {
+  if (!called && event.request.url.includes(".png")) {
+    console.log("called", event.request)
+    called = true
+  }
   event.respondWith(cacheFirst(event))
 }

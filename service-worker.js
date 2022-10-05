@@ -10,18 +10,12 @@ const SERVICE_WORKERS_EVENTS = {
   PUSH: "push",
 }
 
-const enableNavigationPreload = async () => {
-  if (self.registration.navigationPreload) {
-    // Enable navigation preloads!
-    await self.registration.navigationPreload.enable();
-  }
-};
 
 self.addEventListener(SERVICE_WORKERS_EVENTS.INSTALL, swInstall)
 
 // it doesn't activate it on new version automatically
 self.addEventListener(SERVICE_WORKERS_EVENTS.ACTIVATE, (event) => {
-  event.waitUntil(enableNavigationPreload());
+  event.waitUntil(self.registration.navigationPreload?.enable());
   // console.log('activated', event);
 })
 

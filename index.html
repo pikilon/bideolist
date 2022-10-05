@@ -2,22 +2,20 @@
 <html lang="en">
   <head>
     <script>
-      (function(){
-        var redirect = sessionStorage.redirect;
-        delete sessionStorage.redirect;
+      ;(function () {
+        var redirect = sessionStorage.redirect
+        delete sessionStorage.redirect
         if (redirect && redirect != location.href) {
-          history.replaceState(null, null, redirect);
+          history.replaceState(null, null, redirect)
         }
-      })();
+      })()
     </script>
     <meta charset="UTF-8" />
     <link rel="shortcut icon" href="browser/images/favicons/favicon.png" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Roboto:wght@400;900&family=Special+Elite&display=swap"
-      rel="stylesheet"
-    />
+    <!-- <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /> -->
+
+    <link href="browser/css/fonts.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="browser/css/variables.css" />
     <link rel="stylesheet" href="browser/css/normalize.css" />
@@ -25,10 +23,10 @@
     <script type="importmap">
       {
         "imports": {
-          "lit": "https://unpkg.com/lit/index.js?module",
-          "lit-if-defined": "https://unpkg.com/lit/directives/if-defined.js?module",
-          "lit/directives/class-map.js": "https://unpkg.com/lit/directives/class-map.js?module",
-          "lit/directives/unsafe-svg.js": "https://unpkg.com/lit/directives/unsafe-svg.js?module",
+          "lit": "https://unpkg.com/lit@2.3.1/index.js?module",
+          "lit-if-defined": "https://unpkg.com/lit-html@2.3.1/directives/if-defined.js?module",
+          "lit/directives/class-map.js": "https://unpkg.com/lit-html@2.3.1/directives/class-map.js?module",
+          "lit/directives/unsafe-svg.js": "https://unpkg.com/lit-html@2.3.1/directives/unsafe-svg.js?module",
           "renderReactPlayer": "https://unpkg.com/react-player@2.11.0/dist/ReactPlayer.standalone.es6.js"
         }
       }
@@ -51,10 +49,8 @@
 
     <!-- MODULE ENTRY -->
     <script src="browser/js/components/root.js" type="module"></script>
-
   </head>
   <body>
-    
     <bl-root><bl-player slot="player"></bl-player></bl-root>
   </body>
 </html>
