@@ -1,7 +1,9 @@
 {
   "name": "Bideolist",
+  "short_name": "Bideolist",
   "description": "Bideolist is a web application that allows users to create lists of videos from multiple sources",
-  "start_url:": "./",
+  "start_url": "./",
+  "scope": ".",
   "display": "standalone",
   "background_color": "#3a3a3a",
   "theme_color": "#262626",
@@ -10,8 +12,7 @@
     {
       "src": "browser/images/favicons/icon-192x192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "browser/images/favicons/icon-256x256.png",
