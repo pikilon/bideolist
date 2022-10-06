@@ -167,5 +167,6 @@ export const navigateToList = (list) => {
 export const navigateToRoot = (event) => {
   event.preventDefault()
   storeSetter(STORE_NAMES.ROUTE)(ROUTES.ROOT)
+  storeSetter(STORE_NAMES.PLAYING)(false)
   reflectRootInUrl()
 }
