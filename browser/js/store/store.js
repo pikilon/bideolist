@@ -161,6 +161,7 @@ export const navigateToList = (list) => {
   storeSetter(STORE_NAMES.VIDEOS)(videos)
   storeSetter(STORE_NAMES.ACTIVE)(0)
   reflectListInUrl({ [STORE_NAMES.TITLE]: title, [STORE_NAMES.VIDEOS]: videos })
+  storeSetter(STORE_NAMES.PLAYING)(true)
   storeSetter(STORE_NAMES.ROUTE)(ROUTES.LIST)
 }
 
