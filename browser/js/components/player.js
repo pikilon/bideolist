@@ -20,10 +20,6 @@ class Player extends LitElement {
     video: { type: Object, state: true },
     scriptLoaded: { type: Boolean, state: true },
   }
-  static styles = css`
-    ${resetAll}
-    ${container}
-  `
   constructor() {
     super()
     this.playedSeconds = 0
@@ -60,7 +56,7 @@ class Player extends LitElement {
     playing: storeSelector(STORE_NAMES.PLAYING),
     controls: true,
     width: "100%",
-    height: "56.25vw",
+    height: "100%",
     onReady: (player) => {
       this.player = player
     },
@@ -87,6 +83,7 @@ class Player extends LitElement {
     `
   }
   createRenderRoot() {
+    // Do not use a shadow root
     return this;
   }
 }

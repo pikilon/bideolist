@@ -1,0 +1,7 @@
+bl-player {
+  flex-grow: 1;
+}
+#player {
+  height: 100%;
+  width: 100%;
+}
