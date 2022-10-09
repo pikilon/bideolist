@@ -1,6 +1,5 @@
-import { html, css, LitElement } from "lit"
+import { html, LitElement } from "lit"
 import renderReactPlayer from "renderReactPlayer"
-import { container, resetAll } from "../../css/utility-classes.css.js"
 import { subscribeActiveVideo } from "../store/computed.js"
 import {
   STORE_NAMES,
