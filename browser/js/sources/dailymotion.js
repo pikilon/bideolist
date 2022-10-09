@@ -2,13 +2,14 @@ import { SOURCES } from "../constants.js"
 // https://api.dailymotion.com/video/x86h9zq&fields=id,title,duration,description,thumbnail_url
 // https://developer.dailymotion.com/api/#video-fields
 // https://api.dailymotion.com/videos?fields=id,title,description,thumbnail_url&ids=x86h9zq,x14lnch
+export const DAILYMOTION_FETCH_VIDEOS_INFO_URL = "https://api.dailymotion.com/videos"
 
 export const dailymotionFetchVideos = async (id) => {
   if (!id || id.length === 0) return []
   const ids = Array.isArray(id) ? id : [id]
   const idString = ids.join(",")
   const url = [
-    "https://api.dailymotion.com/videos" +
+    DAILYMOTION_FETCH_VIDEOS_INFO_URL +
       "?fields=id,title,description,duration,thumbnail_url,aspect_ratio",
     `ids=${idString}`,
   ].join("&")

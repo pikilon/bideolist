@@ -1,8 +1,16 @@
 import { emit, subscribe } from "./bus.js"
-import { getListInfoFromUrl, reflectListInUrl, URL_PARAMS_STORE, ROUTES, getRoute, reflectRootInUrl } from "./url.js"
+import {
+  getListInfoFromUrl,
+  reflectListInUrl,
+  URL_PARAMS_STORE,
+  ROUTES,
+  getRoute,
+  reflectRootInUrl,
+} from "./url.js"
 import { areEqual } from "../utils/areEqual.js"
 import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
 import { DEMO_LIST } from "../constants.js"
+import { addBideosDB, getBideosMapDB } from "../db.js"
 
 export const STORE_NAMES = {
   VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
@@ -62,8 +70,9 @@ export const setCurrentVideoElapsedSeconds = (seconds) => {
   store[storeName] = seconds
   emit(storeName, seconds)
 }
-const storeSetter =  // returns if emitted
-  (storeName, persist = false) =>
+const storeSetter = // returns if emitted
+
+    (storeName, persist = false) =>
     (value) => {
       const storeSlice = storeHistory[storeName]
       const currentValue = storeSelector(storeName)
@@ -90,6 +99,7 @@ export const setVideosDictionary = (videosMap) => {
     ...storeSelector(STORE_NAMES.VIDEOS_DICTIONARY),
     ...videosMap,
   }
+  addBideosDB(Object.values(videosMap))
   storeSetter(STORE_NAMES.VIDEOS_DICTIONARY, true)(newValue)
 }
 
@@ -120,7 +130,6 @@ export const setListTitle = (title) => {
   setUrlParameters(STORE_NAMES.TITLE)(title)
 }
 
-
 export const setActive = (newIndex, resetCurrentElapsedTime = false) => {
   const isSameIndex = areEqual(storeSelector(STORE_NAMES.ACTIVE), newIndex)
   if (isSameIndex) return
@@ -128,32 +137,40 @@ export const setActive = (newIndex, resetCurrentElapsedTime = false) => {
   if (!resetCurrentElapsedTime) setCurrentVideoElapsedSeconds(0)
 }
 
-export const setNextPrevActive = (prev = false) => () => {
-  const currentActive = storeSelector(STORE_NAMES.ACTIVE)
-  let newActive = prev ? currentActive - 1 : currentActive + 1
-  if (newActive < 0) newActive = 0
-  const videosLength = storeSelector(STORE_NAMES.VIDEOS).length
-  if (newActive >= videosLength) newActive = videosLength - 1
-  setActive(newActive, true)
-}
+export const setNextPrevActive =
+  (prev = false) =>
+  () => {
+    const currentActive = storeSelector(STORE_NAMES.ACTIVE)
+    let newActive = prev ? currentActive - 1 : currentActive + 1
+    if (newActive < 0) newActive = 0
+    const videosLength = storeSelector(STORE_NAMES.VIDEOS).length
+    if (newActive >= videosLength) newActive = videosLength - 1
+    setActive(newActive, true)
+  }
 
 export const fetchNewVideos = async (composedIds) => {
-  const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
+  const videosMap = await getBideosMapDB(composedIds)
   const unkownVideos = composedIds.filter(
     (composedId) => !videosMap[composedId]
   )
+
   const newVideosMap = await fetchAllVideosFromCompundsIds(unkownVideos)
   setVideosDictionary(newVideosMap)
+  const newVideosArray = []
   const videos = []
-  const updatedVideosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
   for (let composedId of composedIds) {
-    const video = updatedVideosMap[composedId]
+    const newVideo = newVideosMap[composedId]
+    const video = videosMap[composedId] || newVideo
+
+    if (newVideo) newVideosArray.push(newVideo)
     if (video) videos.push(video)
   }
+  addBideosDB(newVideosArray)
   return videos
 }
 
-export const handleSetPlaying = (playing) => () => storeSetter(STORE_NAMES.PLAYING)(playing)
+export const handleSetPlaying = (playing) => () =>
+  storeSetter(STORE_NAMES.PLAYING)(playing)
 
 export const navigateToList = (list) => {
   const { title, videos } = list

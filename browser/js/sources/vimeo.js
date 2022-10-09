@@ -1,11 +1,11 @@
 import { SOURCES } from "../constants.js"
 
-const NO_EMBED_URL = "https://noembed.com/embed?url=https://vimeo.com/"
+export const VIMEO_FETCH_VIDEOS_INFO_URL = "https://noembed.com/embed?url=https://vimeo.com/"
 
 export const fetchVimeoVideos = (id) => {
   if (!id || id.length === 0) return []
   const ids = Array.isArray(id) ? id : [id]
-  const promises = ids.map((id) => fetch(NO_EMBED_URL + id).then(res => res.json()).then(formatVimeoVideo))
+  const promises = ids.map((id) => fetch(VIMEO_FETCH_VIDEOS_INFO_URL + id).then(res => res.json()).then(formatVimeoVideo))
   return Promise.all(promises)
 }
 
