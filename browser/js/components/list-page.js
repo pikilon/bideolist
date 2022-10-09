@@ -3,16 +3,17 @@ import { classMap } from "lit/directives/class-map.js"
 import "./list.js"
 import "./list-title.js"
 import "./player.js"
-import "./progress-bar.js"
+import "./duration-bar.js"
 import "./bl-search.js"
 import { container } from "../../css/utility-classes.css.js"
 import { FULL_SCREEN_WRAPPER_CLASSNAME } from "./player-controls.js"
-import { navigateToRoot } from "../store/store.js"
+import { navigateToRoot, storeSelector, STORE_NAMES, fetchNewVideos } from "../store/store.js"
 
 const fullScreenWrapperClass = unsafeCSS(FULL_SCREEN_WRAPPER_CLASSNAME)
 export class ListPage extends LitElement {
   static properties = {
     searchOpen: { type: Boolean, state: true },
+    videosMapLoaded: { type: Boolean, state: true },
   }
   static styles = css`
     ${container}
@@ -42,11 +43,19 @@ export class ListPage extends LitElement {
   `
   constructor() {
     super()
+    this.videosMapLoaded = false
     this.searchOpen = true
+    const compoundIds = storeSelector(STORE_NAMES.VIDEOS);
+    fetchNewVideos(compoundIds).then(() => {
+      this.videosMapLoaded = true
+    });
   }
 
   render() {
-    const { searchOpen } = this
+    const { searchOpen, videosMapLoaded } = this
+
+    if (!videosMapLoaded) return html`<div>Loading...</div>`
+
     return html`
       <a href="../" @click=${navigateToRoot}
         ><img src="browser/images/bideolist_logo.avif" alt="Bideolist logo"
@@ -63,7 +72,7 @@ export class ListPage extends LitElement {
       </div>
 
       <div class="container progress">
-        <progress-bar></progress-bar>
+        <duration-bar></duration-bar>
       </div>
       <div
         class=${classMap({ "container video-list-search": true, searchOpen })}

@@ -13,27 +13,19 @@ import { DEMO_LIST } from "../constants.js"
 import { addBideosDB, getBideosMapDB } from "../db.js"
 
 export const STORE_NAMES = {
-  VIDEOS_DICTIONARY: "VIDEOS_DICTIONARY",
   CURRENT_VIDEO_ELAPSED_SECONDS: "CURRENT_VIDEO_ELAPSED_SECONDS",
   LISTS: "LISTS",
   PLAYING: "PLAYING",
   ...URL_PARAMS_STORE,
 }
 
-const localStorageVideosDictionary = localStorage.getItem(
-  STORE_NAMES.VIDEOS_DICTIONARY
-)
-
+// TODO: move this to db 
 const localListStorage = localStorage.getItem(STORE_NAMES.LISTS) || "{}"
 
 const initialLists = {
   ...JSON.parse(localListStorage),
   [DEMO_LIST.title]: DEMO_LIST,
 }
-
-const videosDictionaryFirstValue = localStorageVideosDictionary
-  ? JSON.parse(localStorageVideosDictionary)
-  : {}
 
 const { videos, title, active } = getListInfoFromUrl()
 
@@ -43,7 +35,6 @@ const store = {
 }
 
 const storeHistory = {
-  [STORE_NAMES.VIDEOS_DICTIONARY]: [videosDictionaryFirstValue],
   [STORE_NAMES.VIDEOS]: [videos],
   [STORE_NAMES.TITLE]: [title],
   [STORE_NAMES.ACTIVE]: [active],
@@ -94,14 +85,6 @@ export const upsertList = (list) => {
   storeSetter(STORE_NAMES.LISTS, true)(newValue)
 }
 
-export const setVideosDictionary = (videosMap) => {
-  const newValue = {
-    ...storeSelector(STORE_NAMES.VIDEOS_DICTIONARY),
-    ...videosMap,
-  }
-  addBideosDB(Object.values(videosMap))
-  storeSetter(STORE_NAMES.VIDEOS_DICTIONARY, true)(newValue)
-}
 
 export const getUnsubscribeValue = ({
   storeName,
@@ -148,6 +131,7 @@ export const setNextPrevActive =
     setActive(newActive, true)
   }
 
+// TODO: move this to service-worker
 export const fetchNewVideos = async (composedIds) => {
   const videosMap = await getBideosMapDB(composedIds)
   const unkownVideos = composedIds.filter(
@@ -155,7 +139,6 @@ export const fetchNewVideos = async (composedIds) => {
   )
 
   const newVideosMap = await fetchAllVideosFromCompundsIds(unkownVideos)
-  setVideosDictionary(newVideosMap)
   const newVideosArray = []
   const videos = []
   for (let composedId of composedIds) {

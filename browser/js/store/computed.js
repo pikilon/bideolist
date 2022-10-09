@@ -1,19 +1,11 @@
-import { subscribe } from "./bus.js"
 import { STORE_NAMES, getUnsubscribeValue, storeSelector } from "./store.js"
-
-export const filterUnknowVideos = (compoundIds) => {
-  const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
-  const unknownVideos = compoundIds.filter(
-    (composedId) => !videosMap[composedId]
-  )
-  return unknownVideos
-}
+import { getBideosMapDB } from "../db.js"
 
 export const subscribeActiveVideo = (activeVideoCallback) => {
-  const wrapperCallback = () => {
+  const wrapperCallback = async () => {
     const active = storeSelector(STORE_NAMES.ACTIVE)
     const videos = storeSelector(STORE_NAMES.VIDEOS)
-    const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
+    const videosMap = await getBideosMapDB(videos)
     const activeId = videos[active]
     const activeVideo = videosMap[activeId]
     activeVideoCallback(activeVideo)
@@ -26,39 +18,33 @@ export const subscribeActiveVideo = (activeVideoCallback) => {
     storeName: STORE_NAMES.VIDEOS,
     callback: wrapperCallback,
   })
-  const unsubscribeVideosMap = getUnsubscribeValue({
-    storeName: STORE_NAMES.VIDEOS_DICTIONARY,
-    callback: wrapperCallback,
-  })
 
   wrapperCallback()
 
   const unsubscribe = () => {
     unsubscribeActive()
     unsubscribeVideos()
-    unsubscribeVideosMap()
   }
 
   return unsubscribe
 }
 
-export const getUnsubscribeVideosTotalDuration = (
-  callbackVideosTotalDuration
-) => {
-  const callback = () => {
-    const videosMap = storeSelector(STORE_NAMES.VIDEOS_DICTIONARY)
-    const compoundIds = storeSelector(STORE_NAMES.VIDEOS)
+export const getUnsubscribeVideosTotalDuration = (callbackDuration) => {
+  const compoundIdsCallback = async (compoundIds) => {
+    const videosMap = await getBideosMapDB(compoundIds)
     const videos = []
     const videosEnds = []
     let totalDuration = 0
+
     for (const composedId of compoundIds) {
       const video = videosMap[composedId]
       if (!video) continue
       totalDuration += video.durationSeconds
-      videosEnds.push(totalDuration)
       videos.push(video)
+      videosEnds.push(totalDuration)
     }
-    callbackVideosTotalDuration({
+
+    callbackDuration({
       videos,
       totalDuration,
       videosEnds,
@@ -66,17 +52,40 @@ export const getUnsubscribeVideosTotalDuration = (
       videosMap,
     })
   }
-  callback()
+  const unsubscribeVideos = getUnsubscribeValue({
+    storeName: STORE_NAMES.VIDEOS,
+    callback: compoundIdsCallback,
+  })
+  return unsubscribeVideos
+}
 
-  const unsubscribeVideos = subscribe(STORE_NAMES.VIDEOS, callback)
-  const unsubscribeVideosMap = subscribe(
-    STORE_NAMES.VIDEOS_DICTIONARY,
-    callback
+export const getElapsedVideosTime = (callback) => {
+  let totalDuration = 0
+  let activeIndex = storeSelector(STORE_NAMES.ACTIVE)
+  let videosEnds = []
+  const updatedCallback = () => {
+    const elapsedTime = videosEnds[activeIndex] || 0
+    callback({ elapsedTime, totalDuration })
+  }
+
+  const unsubscribeActive = getUnsubscribeValue({
+    storeName: STORE_NAMES.ACTIVE,
+    callback: (newActive) => {
+      activeIndex = newActive
+      updatedCallback()
+    },
+  })
+
+  const unsubscribeVideosEnds = getUnsubscribeVideosTotalDuration(
+    (durations) => {
+      videosEnds = durations.videosEnds
+      totalDuration = durations.totalDuration
+      updatedCallback()
+    }
   )
 
-  const unsubscribe = () => {
-    unsubscribeVideos()
-    unsubscribeVideosMap()
+  return () => {
+    unsubscribeActive()
+    unsubscribeVideosEnds()
   }
-  return unsubscribe
 }
