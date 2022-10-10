@@ -25,6 +25,7 @@ export const SOURCES_BY_ID = {
 }
 
 export const DEMO_LIST = {
+  _id: "demo",
   title: "Demo List",
   videos: [
     "yt:rsrIaWFO02w", // bideolist

@@ -2,18 +2,19 @@ import { html, css, LitElement } from "lit"
 import { container } from "../../css/utility-classes.css.js"
 import {
   STORE_NAMES,
-  upsertList,
   getUnsubscribeValue,
   navigateToList,
 } from "../store/store.js"
 import { generateListUrlQuery } from "../store/url.js"
 import "./label.js"
 import "./create-list.js"
+import { getAllListsDB, addListsDB } from "../db.js"
 
 export class Home extends LitElement {
   static properties = {
     listsMap: { type: Object, state: true },
     newList: { type: Object, state: true },
+    lists: { type: Array, state: true },
   }
   static styles = css`
     ${container}
@@ -29,18 +30,16 @@ export class Home extends LitElement {
   `
   constructor() {
     super()
-    const unsubscribeLists = getUnsubscribeValue({
-      storeName: STORE_NAMES.LISTS,
-      callback: (listsMap) => (this.listsMap = listsMap),
-    })
+    this.lists = []
+    this.fetchLists()
+  }
 
-    this.disconnectedCallback = () => {
-      unsubscribeLists()
-    }
+  fetchLists() {
+    getAllListsDB().then((lists) => {
+      this.lists = lists
+    })
   }
-  get lists() {
-    return Object.values(this.listsMap)
-  }
+
   handleNewListChange = (newList) => {
     const { title, videos } = newList
     this.newList = { title, videos: videos.map(({ composedId }) => composedId) }
@@ -48,7 +47,7 @@ export class Home extends LitElement {
   onNewListClick =
     (save = false) =>
     () => {
-      if (save) upsertList(this.newList)
+      if (save) addListsDB(this.newList)
       navigateToList(this.newList)
     }
   get isListReady() {
