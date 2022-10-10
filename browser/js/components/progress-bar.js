@@ -8,7 +8,7 @@ class ProgressBar extends LitElement {
   static styles = css`
     .background {
       height: var(--gap-small);
-      background-color: var(--color-dark-gray);
+      background-color: var(--color-light-gray);
     }
     .progress {
       height: 100%;

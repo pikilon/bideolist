@@ -64,7 +64,7 @@ export const getElapsedVideosTime = (callback) => {
   let activeIndex = storeSelector(STORE_NAMES.ACTIVE)
   let videosEnds = []
   const updatedCallback = () => {
-    const elapsedTime = videosEnds[activeIndex] || 0
+    const elapsedTime = videosEnds[activeIndex - 1] || 0
     callback({ elapsedTime, totalDuration })
   }
 
