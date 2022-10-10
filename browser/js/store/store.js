@@ -9,22 +9,12 @@ import {
 } from "./url.js"
 import { areEqual } from "../utils/areEqual.js"
 import { fetchAllVideosFromCompundsIds } from "../api/fetchAllVideos.js"
-import { DEMO_LIST } from "../constants.js"
 import { addBideosDB, getBideosMapDB } from "../db.js"
 
 export const STORE_NAMES = {
   CURRENT_VIDEO_ELAPSED_SECONDS: "CURRENT_VIDEO_ELAPSED_SECONDS",
-  LISTS: "LISTS",
   PLAYING: "PLAYING",
   ...URL_PARAMS_STORE,
-}
-
-// TODO: move this to db 
-const localListStorage = localStorage.getItem(STORE_NAMES.LISTS) || "{}"
-
-const initialLists = {
-  ...JSON.parse(localListStorage),
-  [DEMO_LIST.title]: DEMO_LIST,
 }
 
 const { videos, title, active } = getListInfoFromUrl()
@@ -38,7 +28,6 @@ const storeHistory = {
   [STORE_NAMES.VIDEOS]: [videos],
   [STORE_NAMES.TITLE]: [title],
   [STORE_NAMES.ACTIVE]: [active],
-  [STORE_NAMES.LISTS]: [initialLists],
   [STORE_NAMES.PLAYING]: [true],
   [STORE_NAMES.ROUTE]: [getRoute()],
 }
@@ -84,7 +73,6 @@ export const upsertList = (list) => {
   }
   storeSetter(STORE_NAMES.LISTS, true)(newValue)
 }
-
 
 export const getUnsubscribeValue = ({
   storeName,
