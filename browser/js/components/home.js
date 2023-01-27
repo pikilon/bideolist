@@ -80,7 +80,7 @@ export class Home extends LitElement {
           <h1>Create a new list</h1>
           <create-list .change=${this.handleNewListChange}></create-list>
           <button ?disabled=${!isListReady} @click=${this.onNewListClick(true)}>
-            Save and go
+            Save and go to the list
           </button>
           <button
             ?disabled=${!isListReady}
